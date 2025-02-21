@@ -3,17 +3,14 @@
 <head>
   <!-- 
     ###################################################################################################
-    CPA ON FIRE - FINAL 4-WAY ENTITY TAX CALCULATOR
+    CPA ON FIRE - ENTITY SELECTION CALCULATOR
     (Sole Prop, Partnership, S Corp, C Corp)
-    With a personal tax rate (0-35% in increments of 5) applied to all pass-through/distributions,
-    plus a 21% corporate level on the C Corp leftover, and a payroll tax on salary (S & C corp),
-    and self-employment tax for sole prop & partnership.
-
-    Color scheme: #E55328 (CPA on Fire orange).
+    With a user-chosen personal tax rate (0–35%) for pass-through or salary,
+    and a fixed 15% dividend tax on leftover C Corp distributions (after 21% corporate tax).
     ###################################################################################################
   -->
   <meta charset="UTF-8">
-  <title>CPA On Fire - 4-Way Entity Tax Calculator (With Personal Tax Rate)</title>
+  <title>CPA On Fire - Entity Selection Calculator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Optional: Google Fonts -->
@@ -22,7 +19,7 @@
     href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"
   />
 
-  <!-- MASSIVE Inline CSS for demonstration -->
+  <!-- MASSIVE inline CSS for demonstration -->
   <style>
     /*********************************************************************************
       1) GLOBAL & RESET
@@ -44,14 +41,8 @@
       text-decoration: none;
       color: inherit;
     }
-    img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-    }
-
     :root {
-      --brand-orange: #E55328; /* "CPA On Fire" brand color (more orange) */
+      --brand-orange: #E55328; /* "CPA On Fire" orange */
       --brand-white: #fff;
       --brand-bg: #fdfdfd;
       --max-width: 1200px;
@@ -154,6 +145,12 @@
       width: 100%;
       margin-top: 0.5rem;
     }
+    select {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
     .calc-btn-wrap {
       text-align: center;
       margin-top: 2rem;
@@ -170,12 +167,6 @@
     }
     .calc-btn:hover {
       background-color: #c4431e;
-    }
-    select {
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
     }
 
     /*********************************************************************************
@@ -251,7 +242,7 @@
     }
 
     /*********************************************************************************
-      5) INFO SECTION / FOOTER
+      5) INFO SECTION
     *********************************************************************************/
     .info-section {
       background-color: #fefefe;
@@ -276,6 +267,10 @@
       margin: 0 auto;
       line-height: 1.6;
     }
+
+    /*********************************************************************************
+      6) FOOTER
+    *********************************************************************************/
     .footer {
       background-color: #222;
       color: #fff;
@@ -285,7 +280,7 @@
     }
 
     /*********************************************************************************
-      6) RESPONSIVE BREAKPOINTS
+      7) RESPONSIVE BREAKPOINTS
     *********************************************************************************/
     @media (max-width: 900px) {
       .results-grid {
@@ -321,18 +316,16 @@
   </header>
 
   <!-- ======================================================================================
-       CALCULATOR SECTION (FRONT & CENTER)
+       CALCULATOR SECTION
   ====================================================================================== -->
   <section class="calculator-section" id="calculatorSection">
     <div class="calc-container">
       <div class="calc-header">
-        <h1>Sole Prop vs. Partnership vs. S Corp vs. C Corp</h1>
+        <h1>Entity Selection Calculator</h1>
         <p>
-          Compare total taxes across four common structures using:
-          <br/>- Self-Employment Tax or Payroll Tax (as applicable)
-          <br/>- A Federal “Effective Personal Tax Rate” 
-          <br/>- A 21% Corporate Tax for C Corp leftover
-          <br/><strong>No more leftover scenarios without personal taxes—making it fairer to the C Corp!</strong>
+          Compare four business entity types (Sole Prop, Partnership, S Corp, C Corp) 
+          by factoring in self-employment or payroll taxes, your chosen personal tax rate, 
+          and a 15% dividend tax on C Corp distributions. 
         </p>
       </div>
 
@@ -340,7 +333,8 @@
       <div class="calc-step">
         <h2>1) Annual Net Business Income</h2>
         <p>
-          This is your net profit from operations (before paying yourself a salary in a corp).
+          For S & C Corps, this is your profit before paying a W-2 salary. 
+          For Sole Prop & Partnership, it's simply your total earnings.
         </p>
         <div class="slider-group">
           <label class="slider-label" for="netIncomeRange">Net Income ($10k - $500k):</label>
@@ -357,12 +351,11 @@
         </div>
       </div>
 
-      <!-- Step 2: Owner Salary for S/C Corp -->
+      <!-- Step 2: Owner Salary (for S & C Corps) -->
       <div class="calc-step">
-        <h2>2) Owner Salary (For S/C Corp Only)</h2>
+        <h2>2) Owner Salary (S & C Corp Only)</h2>
         <p>
-          The amount you’d pay yourself as W-2 wages in an S or C Corp. 
-          Sole Prop and Partnership ignore this.
+          The portion considered W-2 wages. Sole Prop & Partnership do not use this field.
         </p>
         <div class="slider-group">
           <label class="slider-label" for="ownerSalaryRange">Owner Salary ($20k - $200k):</label>
@@ -379,17 +372,17 @@
         </div>
       </div>
 
-      <!-- Step 3: Personal Tax Rate -->
+      <!-- Step 3: Personal Tax Rate (for pass-through income or corp salary) -->
       <div class="calc-step">
-        <h2>3) Effective Personal Tax Rate</h2>
+        <h2>3) Personal Tax Rate (0% - 35%)</h2>
         <p>
-          A broad personal tax rate applied to net income for pass-throughs 
-          or to salary + distribution for the C Corp leftover.
+          This applies to pass-through income (Sole Prop, Partnership, S Corp) 
+          or the salary portion (C Corp). 
+          Any leftover from C Corp is taxed at 21% plus a separate 15% dividend tax.
         </p>
         <div class="form-group">
-          <label class="slider-label" for="personalTaxSelect">Personal Tax Rate (0% - 35%):</label>
+          <label class="slider-label" for="personalTaxSelect">Select Your Effective Personal Rate:</label>
           <select id="personalTaxSelect">
-            <!-- increments of 5% -->
             <option value="0">0%</option>
             <option value="0.05">5%</option>
             <option value="0.1">10%</option>
@@ -407,20 +400,15 @@
         <button class="calc-btn" onclick="calculateAllEntities()">Calculate Taxes</button>
       </div>
 
-      <!-- RESULTS SECTION -->
+      <!-- RESULTS -->
       <div class="results-section" id="resultsSection">
         <div class="results-header">
           <h2>Your Results</h2>
-          <p>
-            Below are approximate total taxes for each entity, 
-            factoring in Self-Employment or Payroll tax, 
-            the chosen personal tax rate, and for the C Corp, 
-            the 21% corporate level.
-          </p>
+          <p>Approximate total taxes for each entity, including payroll/self-employment tax, personal tax, corporate tax, and dividend tax.</p>
         </div>
 
         <div class="results-grid">
-          <!-- Sole Prop -->
+          <!-- Sole Prop Card -->
           <div class="results-card" id="spCard">
             <h3>Sole Prop</h3>
             <p class="results-line" id="sp-seTax"></p>
@@ -428,7 +416,7 @@
             <p class="results-line results-bold" id="sp-total"></p>
           </div>
 
-          <!-- Partnership -->
+          <!-- Partnership Card -->
           <div class="results-card" id="ptCard">
             <h3>Partnership</h3>
             <p class="results-line" id="pt-seTax"></p>
@@ -436,7 +424,7 @@
             <p class="results-line results-bold" id="pt-total"></p>
           </div>
 
-          <!-- S Corp -->
+          <!-- S Corp Card -->
           <div class="results-card" id="scCard">
             <h3>S Corp</h3>
             <p class="results-line" id="sc-payrollTax"></p>
@@ -444,11 +432,12 @@
             <p class="results-line results-bold" id="sc-total"></p>
           </div>
 
-          <!-- C Corp -->
+          <!-- C Corp Card -->
           <div class="results-card" id="ccCard">
             <h3>C Corp</h3>
             <p class="results-line" id="cc-payrollTax"></p>
             <p class="results-line" id="cc-corpTax"></p>
+            <p class="results-line" id="cc-dividendTax"></p>
             <p class="results-line" id="cc-personalTax"></p>
             <p class="results-line results-bold" id="cc-total"></p>
           </div>
@@ -462,9 +451,7 @@
     </div>
   </section>
 
-  <!-- ======================================================================================
-       INFO / DISCLAIMER SECTION
-  ====================================================================================== -->
+  <!-- INFO SECTION -->
   <section class="info-section" id="infoSection">
     <div class="info-container">
       <div class="info-title">
@@ -472,55 +459,59 @@
       </div>
       <div class="info-content">
         <p>
-          This calculator now applies your chosen effective personal tax rate 
-          to all pass-through scenarios (Sole Prop, Partnership, S Corp) on 
-          the entire net business income. For the C Corp, we apply it to both 
-          the salary and leftover distribution (after 21% corporate tax). 
-          This helps show a more “apples-to-apples” comparison of overall tax burden.
+          This calculator applies a user-chosen personal tax rate to:
+          <ul>
+            <li>Sole Prop & Partnership: Entire net income.</li>
+            <li>S Corp: Entire net income (pass-through).</li>
+            <li>C Corp: Salary portion only. The leftover is taxed at 21% corporately, then 15% dividends.</li>
+          </ul>
         </p>
         <p>
-          As always, real-life tax calculations may vary significantly based on 
-          state taxes, multiple owners, deductions, or changing tax laws. 
-          Consult a CPA for personalized guidance.
+          In reality, state taxes, multi-owner scenarios, or additional deductions can alter these figures. 
+          This illustration aims to compare big-picture differences. For personalized advice, 
+          consult a professional at CPA On Fire.
         </p>
       </div>
     </div>
   </section>
 
-  <!-- ======================================================================================
-       FOOTER
-  ====================================================================================== -->
+  <!-- FOOTER -->
   <footer class="footer">
     <p>&copy; 2025 CPA On Fire. All rights reserved.</p>
   </footer>
 
-  <!-- ======================================================================================
-       JAVASCRIPT
-  ====================================================================================== -->
+  <!-- JAVASCRIPT -->
   <script>
     /********************************************************************
       1) CONSTANTS
     ********************************************************************/
-    const SS_WAGE_BASE = 160200; // Approx 2023 wage base
+    const SS_WAGE_BASE = 160200; // 2023 approx
+    const CORP_RATE = 0.21;      // C Corp corporate tax
+    const DIVIDEND_RATE = 0.15;  // 15% dividend tax (fixed)
 
-    // Corporate tax is 21% in this simplified scenario
-    const CORP_RATE = 0.21;
+    /********************************************************************
+      2) HELPER FUNCTIONS
+    ********************************************************************/
+    function toCurrency(num) {
+      return '$' + num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
 
-    // We'll implement official self-employment method for 
-    // Sole Prop & Partnership (92.35% factor, SS+Med).
-    function calcSelfEmploymentTax(income) {
-      const netE = income * 0.9235; // official net earnings factor
+    // Official approach for self-employment tax (Sole Prop & Partnership)
+    function calcSelfEmpTax(income) {
+      const netE = income * 0.9235;
+      // SS portion
       let ssTax = 0;
       if (netE <= SS_WAGE_BASE) {
-        ssTax = netE * 0.124; // 12.4%
+        ssTax = netE * 0.124; 
       } else {
         ssTax = SS_WAGE_BASE * 0.124;
       }
-      const medTax = netE * 0.029; // 2.9% for Medicare
+      // Medicare portion
+      const medTax = netE * 0.029;
       return ssTax + medTax;
     }
 
-    // S or C corp payroll tax on W-2 wages
+    // Payroll tax for S or C corp salary
     function calcPayrollTax(salary) {
       let ssTax = 0;
       if (salary <= SS_WAGE_BASE) {
@@ -532,94 +523,77 @@
       return ssTax + medTax;
     }
 
-    // Basic currency formatter
-    function toCurrency(num) {
-      return '$' + num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
-
     /********************************************************************
-      2) MAIN CALC FUNCTION
+      3) MAIN CALC FUNCTION
     ********************************************************************/
     function calculateAllEntities() {
       const netIncome = parseFloat(document.getElementById('netIncomeRange').value) || 0;
       const ownerSalary = parseFloat(document.getElementById('ownerSalaryRange').value) || 0;
-      // personal tax rate
-      const personalTaxSelect = document.getElementById('personalTaxSelect');
-      const personalRate = parseFloat(personalTaxSelect.value) || 0;
+      const personalTaxStr = document.getElementById('personalTaxSelect').value || "0";
+      const personalTaxRate = parseFloat(personalTaxStr);
 
-      // If user tries a salary > net income for corp:
+      // If salary > netIncome for corp scenarios:
       if (ownerSalary > netIncome) {
         alert("Owner salary cannot exceed net income for S or C Corp scenario.");
         return;
       }
 
-      /*************************
-       * 1) SOLE PROPRIETORSHIP
-       *************************/
-      const spSETax = calcSelfEmploymentTax(netIncome);
-      const spPersonalTax = netIncome * personalRate;
+      // 1) Sole Prop
+      const spSETax = calcSelfEmpTax(netIncome);
+      const spPersonalTax = netIncome * personalTaxRate;
       const spTotal = spSETax + spPersonalTax;
-
-      document.getElementById('sp-seTax').textContent = "Self-Employment Tax: " + toCurrency(spSETax);
+      document.getElementById('sp-seTax').textContent = "SE Tax: " + toCurrency(spSETax);
       document.getElementById('sp-personalTax').textContent = "Personal Tax: " + toCurrency(spPersonalTax);
       document.getElementById('sp-total').textContent = "Total: " + toCurrency(spTotal);
 
-      /*************************
-       * 2) PARTNERSHIP
-       *************************/
-      // basically the same as sole prop for an active partner
-      const ptSETax = calcSelfEmploymentTax(netIncome);
-      const ptPersonalTax = netIncome * personalRate;
+      // 2) Partnership (similar to sole prop for an active partner)
+      const ptSETax = calcSelfEmpTax(netIncome);
+      const ptPersonalTax = netIncome * personalTaxRate;
       const ptTotal = ptSETax + ptPersonalTax;
-
-      document.getElementById('pt-seTax').textContent = "Self-Employment Tax: " + toCurrency(ptSETax);
+      document.getElementById('pt-seTax').textContent = "SE Tax: " + toCurrency(ptSETax);
       document.getElementById('pt-personalTax').textContent = "Personal Tax: " + toCurrency(ptPersonalTax);
       document.getElementById('pt-total').textContent = "Total: " + toCurrency(ptTotal);
 
-      /*************************
-       * 3) S CORP
-       *************************/
-      // - payroll tax on salary
-      // - entire net is pass-through at personal tax
-      const scPayrollTax = calcPayrollTax(ownerSalary);
-      const scPersonalTax = netIncome * personalRate; 
-      const scTotal = scPayrollTax + scPersonalTax;
-
-      document.getElementById('sc-payrollTax').textContent = "Payroll Tax: " + toCurrency(scPayrollTax);
+      // 3) S Corp
+      // Salary -> payroll tax + entire net income at personal rate
+      const scPayroll = calcPayrollTax(ownerSalary);
+      const scPersonalTax = netIncome * personalTaxRate;
+      const scTotal = scPayroll + scPersonalTax;
+      document.getElementById('sc-payrollTax').textContent = "Payroll Tax: " + toCurrency(scPayroll);
       document.getElementById('sc-personalTax').textContent = "Personal Tax: " + toCurrency(scPersonalTax);
       document.getElementById('sc-total').textContent = "Total: " + toCurrency(scTotal);
 
-      /*************************
-       * 4) C CORP
-       *************************/
-      // - payroll tax on salary
-      // - leftover = netIncome - salary
-      // - corp tax = leftover * 21%
-      // - leftover after corp = leftover - corp tax
-      // - personal tax on ( leftover after corp + salary ) 
-      //   because you pay personal tax on your W-2 wages 
-      //   plus you presumably distribute leftover after corp tax
+      // 4) C Corp
+      // Salary -> payroll tax + personal tax at "personalTaxRate"
+      // leftover = netIncome - salary
+      // leftover corp tax = leftover * 21%
+      // leftover after corp = leftover - corp tax
+      // leftover after corp subject to 15% dividend tax
+      // final sum = payroll tax + personal tax on salary + leftover * 21% + leftoverAfterCorp * 15%
       const ccPayrollTax = calcPayrollTax(ownerSalary);
+      const ccPersonalTaxOnSalary = ownerSalary * personalTaxRate;
+
       const leftover = netIncome - ownerSalary;
       let ccCorpTax = 0;
       let leftoverAfterCorp = 0;
+      let ccDividendTax = 0;
       if (leftover > 0) {
-        ccCorpTax = leftover * CORP_RATE;
+        ccCorpTax = leftover * CORP_RATE; // 21%
         leftoverAfterCorp = leftover - ccCorpTax;
+        ccDividendTax = leftoverAfterCorp * DIVIDEND_RATE; // 15%
       }
-      // personal tax includes salary + leftoverAfterCorp
-      const ccPersonalTax = (ownerSalary + leftoverAfterCorp) * personalRate;
-      const ccTotal = ccPayrollTax + ccCorpTax + ccPersonalTax;
+      const ccTotal = ccPayrollTax + ccPersonalTaxOnSalary + ccCorpTax + ccDividendTax;
 
       document.getElementById('cc-payrollTax').textContent = "Payroll Tax: " + toCurrency(ccPayrollTax);
-      document.getElementById('cc-corpTax').textContent = "Corporate Tax (21%): " + toCurrency(ccCorpTax);
-      document.getElementById('cc-personalTax').textContent = "Personal Tax: " + toCurrency(ccPersonalTax);
+      document.getElementById('cc-corpTax').textContent = "Corp Tax (21%): " + toCurrency(ccCorpTax);
+      document.getElementById('cc-dividendTax').textContent = "Dividend Tax (15%): " + toCurrency(ccDividendTax);
+      document.getElementById('cc-personalTax').textContent = "Personal Tax (Salary Only): " + toCurrency(ccPersonalTaxOnSalary);
       document.getElementById('cc-total').textContent = "Total: " + toCurrency(ccTotal);
 
       // Show results
-      const results = document.getElementById('resultsSection');
-      results.style.display = 'block';
-      results.scrollIntoView({ behavior: 'smooth' });
+      const resultsSection = document.getElementById('resultsSection');
+      resultsSection.style.display = 'block';
+      resultsSection.scrollIntoView({ behavior: 'smooth' });
 
       // Draw bar chart
       drawBarChart(spTotal, ptTotal, scTotal, ccTotal);
@@ -633,31 +607,31 @@
     }
 
     /********************************************************************
-      3) BAR CHART (4 BARS)
+      4) BAR CHART (4 BARS)
     ********************************************************************/
-    let chartContext = null;
+    let chartCtx = null;
     function drawBarChart(spVal, ptVal, scVal, ccVal) {
       const canvas = document.getElementById('chartCanvas');
       if (!canvas) return;
-      if (!chartContext) {
-        chartContext = canvas.getContext('2d');
+
+      if (!chartCtx) {
+        chartCtx = canvas.getContext('2d');
       }
-      const ctx = chartContext;
+      const ctx = chartCtx;
       const w = canvas.width;
       const h = canvas.height;
-
-      // Clear
       ctx.clearRect(0, 0, w, h);
 
       const maxVal = Math.max(spVal, ptVal, scVal, ccVal) * 1.2;
       const bottom = h - 30;
       const barWidth = 50;
       const barSpacing = 40;
+
       const data = [
         { label: "Sole Prop", value: spVal },
         { label: "Partnership", value: ptVal },
         { label: "S Corp", value: scVal },
-        { label: "C Corp", value: ccVal }
+        { label: "C Corp", value: ccVal },
       ];
       const totalBars = data.length;
       const totalWidth = totalBars * barWidth + (totalBars - 1) * barSpacing;
@@ -671,7 +645,6 @@
         const x = startX + i * (barWidth + barSpacing);
         const barHeight = scaleVal(item.value);
 
-        // draw
         ctx.fillStyle = 'rgba(229,83,40,0.7)';
         ctx.fillRect(x, bottom - barHeight, barWidth, barHeight);
 
