@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>S Corp Savings Calculator (Example)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 600px;
+    }
+    .calculator {
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 5px;
+    }
+    .calculator label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .calculator input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+    }
+    .results {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 5px;
+    }
+    .results p {
+      margin: 5px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>S Corp Savings Calculator</h1>
+  <div class="calculator">
+    <label for="netIncome">Estimated Annual Net Income (before salary)</label>
+    <input type="number" id="netIncome" placeholder="e.g. 100000" />
+
+    <label for="ownerSalary">Reasonable Owner Salary</label>
+    <input type="number" id="ownerSalary" placeholder="e.g. 60000" />
+
+    <label for="extraFees">Additional S Corp Costs (annual)</label>
+    <input type="number" id="extraFees" placeholder="e.g. 2000" />
+
+    <button onclick="calculate()">Calculate Savings</button>
+
+    <div id="results" class="results" style="display:none;">
+      <p id="solePropTax"></p>
+      <p id="sCorpTax"></p>
+      <p id="difference"></p>
+    </div>
+  </div>
+
+  <script>
+    function calculate() {
+      // Grab user inputs
+      const netIncome = parseFloat(document.getElementById("netIncome").value) || 0;
+      const ownerSalary = parseFloat(document.getElementById("ownerSalary").value) || 0;
+      const extraFees = parseFloat(document.getElementById("extraFees").value) || 0;
+
+      // 1) Sole Proprietor: Approx self-employment tax (15.3%)
+      // (No bracket complexity here, purely an illustration)
+      const solePropSelfEmpTax = netIncome * 0.153;
+      const solePropTotalTaxApprox = solePropSelfEmpTax; 
+      
+      // 2) S Corp approach
+      // Employer + Employee side (15.3%) on the salary portion
+      const sCorpPayrollTax = ownerSalary * 0.153;
+      // Remainder as distributions (not subject to FICA), but still subject to income tax
+      // This example omits actual income tax bracket differences for simplicity.
+
+      // Additional costs for S Corp (estimated)
+      const sCorpAdditionalCosts = extraFees;
+
+      // Summarize S Corp approach
+      const sCorpTotalTaxApprox = sCorpPayrollTax + sCorpAdditionalCosts;
+
+      // 3) Calculate difference
+      const totalTaxDifference = solePropTotalTaxApprox - sCorpTotalTaxApprox;
+
+      // Render results
+      document.getElementById("solePropTax").textContent = 
+        "Estimated Sole Prop (SE tax only): $" + solePropTotalTaxApprox.toFixed(2);
+      document.getElementById("sCorpTax").textContent = 
+        "Estimated S Corp (Payroll tax + fees): $" + sCorpTotalTaxApprox.toFixed(2);
+      
+      if(totalTaxDifference > 0) {
+        document.getElementById("difference").textContent = 
+          "Approx. Annual Savings: $" + totalTaxDifference.toFixed(2);
+      } else if (totalTaxDifference < 0) {
+        document.getElementById("difference").textContent =
+          "No savings. S Corp costs exceed potential benefit by $" + Math.abs(totalTaxDifference).toFixed(2);
+      } else {
+        document.getElementById("difference").textContent =
+          "No difference in this scenario.";
+      }
+      
+      document.getElementById("results").style.display = "block";
+    }
+  </script>
+</body>
+</html>
