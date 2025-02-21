@@ -2,45 +2,48 @@
 <html lang="en">
 <head>
   <!-- 
-    #################################################################
-    # MASSIVE & ADVANCED S CORP VS. SOLE PROP CALCULATOR
-    # "CPA On Fire" Edition
-    # 
-    # Features:
-    #  1) Front-and-center calculator layout
-    #  2) Orange-hued brand color (#E55328 or similar)
-    #  3) Multi-owner toggle
-    #  4) Health Insurance / Retirement contributions
-    #  5) Show Detailed Breakdown (actually populates a table)
-    #  6) Additional disclaimers & advanced toggles for everything
-    #  7) JavaScript bar chart comparison of total tax cost
-    #  8) Lines and lines of code to demonstrate "showing off" 
-    #
-    # This code is intentionally verbose, with countless comments,
-    # to double or triple the size from previous examples.
-    #################################################################
-  -->
-  <meta charset="UTF-8">
-  <title>CPA On Fire - Ultimate (Super-Extended) S Corp vs. Sole Prop Calculator</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    =========================================================================================
+    CPA ON FIRE - S Corp vs. Sole Prop vs. Partnership vs. C Corp Calculator
+    FINAL EXPANDED EDITION
+    =========================================================================================
+    This code compares 4 entity types:
+      1) Sole Proprietorship
+      2) Partnership
+      3) S Corporation
+      4) C Corporation
 
-  <!-- 
-    Optional: Multiple Google Fonts to blow up code size & styling variety.
+    Inputs:
+      - Net Income (before salary for corp scenarios)
+      - Owner Salary (for S Corp / C Corp)
+      - Extra Annual Fees (for S Corp and optionally for C Corp if you like)
+    
+    We calculate:
+      - Self-Employment tax for Sole Prop & Partnership.
+      - Payroll tax + leftover distribution for S Corp.
+      - Payroll tax, corporate tax (21%), and dividend tax (15%) for leftover in C Corp.
+
+    We keep a bar chart with 4 bars to compare total taxes across these structures.
+
+    Brand color: #E55328 (CPA on Fire orange).
   -->
+  <meta charset="UTF-8" />
+  <title>CPA On Fire - 4-Way Entity Tax Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Optional: Google Fonts to style text nicely -->
   <link
     rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto+Mono:wght@300;500;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"
   />
 
   <!-- 
-    Below: A massive inline CSS section with references to the new brand color (#E55328).
-    If you prefer shorter code, place this in a separate styles.css. 
-    But we want it all here to demonstrate "over-the-top" code length.
+    MASSIVE Inline CSS for demonstration. 
+    Normally you'd move this to a separate styles.css.
   -->
   <style>
-    /********************************************************************
-      BASE RESETS & GLOBAL STYLES
-    ********************************************************************/
+    /**************************************************************************************
+      1) BASE & GLOBAL STYLES
+    **************************************************************************************/
     * {
       margin: 0;
       padding: 0;
@@ -50,7 +53,7 @@
       width: 100%;
       height: 100%;
       font-family: 'Open Sans', sans-serif;
-      background-color: #fdfdfd;
+      background-color: #fafafa;
       color: #333;
       line-height: 1.6;
     }
@@ -58,31 +61,15 @@
       text-decoration: none;
       color: inherit;
     }
-    img {
-      max-width: 100%;
-      display: block;
-      height: auto;
-    }
-    ul {
-      list-style: none;
-    }
 
-    /* 
-      Defining CSS variables for brand color, now #E55328 (more orange).
-      This is close to #DE3922 but shifted to be more orange.
-    */
+    /* Define brand color for CPA On Fire (more orange hue) */
     :root {
       --brand-orange: #E55328; 
-      --brand-black: #000;
       --brand-white: #fff;
-      --brand-gray: #666;
-      --brand-bg: #fdfdfd;
+      --brand-bg: #fafafa;
       --max-width: 1200px;
     }
 
-    /* 
-      Utility .container 
-    */
     .container {
       width: 100%;
       max-width: var(--max-width);
@@ -90,15 +77,14 @@
       padding: 0 1rem;
     }
 
-    /********************************************************************
-      NAVBAR STYLES
-      Place the menu at the top. We'll keep it simple.
-    ********************************************************************/
+    /**************************************************************************************
+      2) NAVBAR
+    **************************************************************************************/
     .navbar {
       background-color: var(--brand-orange);
       padding: 1rem 0;
     }
-    .navbar-wrapper {
+    .navbar-container {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -110,22 +96,20 @@
     }
     .navbar-menu {
       display: flex;
-      gap: 1.5rem;
+      gap: 1rem;
     }
     .navbar-menu li a {
       color: var(--brand-white);
       font-weight: 600;
-      transition: 0.3s color;
+      transition: color 0.3s;
     }
     .navbar-menu li a:hover {
-      color: #fdece6;
+      color: #ffe8e0;
     }
 
-    /********************************************************************
-      CALCULATOR SECTION (FRONT & CENTER)
-      We'll place this calculator high on the page, well before 
-      the disclaimers and about info.
-    ********************************************************************/
+    /**************************************************************************************
+      3) CALCULATOR SECTION (Front & Center)
+    **************************************************************************************/
     .calculator-section {
       background-color: var(--brand-white);
       padding: 3rem 1rem;
@@ -134,35 +118,28 @@
     .calc-container {
       max-width: 900px;
       margin: 0 auto;
-      /* 
-        We'll add a "boxy" style or subtle drop shadow 
-        so it looks front & center.
-      */
       background-color: #fff;
       border-radius: 6px;
       box-shadow: 0 1px 5px rgba(0,0,0,0.1);
       padding: 2rem;
     }
-    .calc-title {
+    .calc-header {
       text-align: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
     }
-    .calc-title h1 {
-      font-size: 2rem;
+    .calc-header h1 {
       color: var(--brand-orange);
+      font-size: 2rem;
       font-weight: 700;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
     }
-    .calc-title p {
+    .calc-header p {
       color: #555;
       max-width: 700px;
       margin: 0 auto;
+      margin-bottom: 1rem;
     }
 
-    /* 
-      We'll do multi-step items but keep them all visible 
-      so the user doesn't have to click next. 
-    */
     .calc-step {
       margin-bottom: 2rem;
     }
@@ -178,7 +155,7 @@
       font-size: 0.95rem;
     }
     .slider-group, .form-group {
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
     }
     .slider-label {
       font-weight: 700;
@@ -195,88 +172,17 @@
       width: 100%;
       margin-top: 0.5rem;
     }
-    .form-group input[type="number"] {
+    input[type="number"] {
       width: 100%;
       padding: 0.5rem;
       border-radius: 4px;
       border: 1px solid #ccc;
     }
 
-    /* 
-      Multi-owner toggle area 
-    */
-    .owners-toggle-area {
-      margin-bottom: 1.5rem;
-      background-color: #fafafa;
-      padding: 1rem;
-      border-radius: 6px;
-      border: 1px solid #eee;
+    .calc-btn-wrap {
+      text-align: center;
+      margin-top: 2rem;
     }
-    .owners-toggle-area h3 {
-      margin-bottom: 0.75rem;
-      color: var(--brand-orange);
-      font-weight: 600;
-      font-size: 1.1rem;
-    }
-    .owners-toggle-area p {
-      margin-bottom: 0.5rem;
-      color: #444;
-      font-size: 0.95rem;
-    }
-    .owners-toggle-area label {
-      display: inline-block;
-      margin-right: 1rem;
-      font-weight: 600;
-      color: #333;
-    }
-    .owners-toggle-area input[type="number"] {
-      width: 80px;
-      margin-left: 0.5rem;
-    }
-
-    /* 
-      Additional toggles for retirement, health insurance, etc.
-    */
-    .extra-deductions-area {
-      margin-top: 1.5rem;
-      padding: 1rem;
-      background-color: #fafafa;
-      border: 1px solid #eee;
-      border-radius: 6px;
-    }
-    .extra-deductions-area h3 {
-      color: var(--brand-orange);
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    .extra-deductions-area p {
-      margin-bottom: 0.5rem;
-      color: #444;
-      font-size: 0.95rem;
-    }
-    .extra-deductions-area .deductions-group {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-top: 1rem;
-    }
-    .deduction-item {
-      flex: 1 1 200px;
-    }
-    .deduction-item label {
-      font-weight: 600;
-      display: block;
-      margin-bottom: 0.25rem;
-      color: #333;
-    }
-    .deduction-item input[type="number"] {
-      width: 100%;
-    }
-
-    /* 
-      Calculation Button 
-    */
     .calc-btn {
       display: inline-block;
       padding: 0.75rem 1.5rem;
@@ -291,17 +197,15 @@
     .calc-btn:hover {
       background-color: #c4431e;
     }
-    .calc-btn-wrap {
-      text-align: center;
-      margin-top: 2rem;
-    }
 
-    /********************************************************************
-      RESULTS SECTION
-    ********************************************************************/
+    /**************************************************************************************
+      4) RESULTS SECTION
+         - We'll have 4 columns: 
+           Sole Prop, Partnership, S Corp, C Corp
+    **************************************************************************************/
     .results-section {
       margin-top: 3rem;
-      display: none; /* hide initially */
+      display: none; /* hidden until user calculates */
       background-color: #fff;
       border-radius: 6px;
       box-shadow: 0 1px 5px rgba(0,0,0,0.1);
@@ -315,6 +219,7 @@
       color: var(--brand-orange);
       font-size: 1.4rem;
       font-weight: 700;
+      margin-bottom: 0.5rem;
     }
     .results-header p {
       color: #555;
@@ -325,8 +230,8 @@
     }
     .results-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
+      grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns */
+      gap: 1rem;
       margin-bottom: 2rem;
     }
     .results-card {
@@ -334,6 +239,7 @@
       padding: 1.5rem;
       border-radius: 6px;
       border: 1px solid #eee;
+      text-align: left;
     }
     .results-card h3 {
       color: var(--brand-orange);
@@ -357,47 +263,14 @@
       margin-bottom: 2rem;
     }
 
-    /* "Show Detailed Breakdown" area */
-    .breakdown-toggle {
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    .breakdown-section {
-      display: none;
-      margin-top: 1rem;
-    }
-    .breakdown-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 2rem;
-    }
-    .breakdown-table thead {
-      background-color: var(--brand-orange);
-      color: var(--brand-white);
-    }
-    .breakdown-table th, .breakdown-table td {
-      padding: 0.75rem;
-      border: 1px solid #ccc;
-      text-align: left;
-    }
-    .breakdown-note {
-      color: #666;
-      font-size: 0.9rem;
-      margin-bottom: 2rem;
-    }
-
-    /********************************************************************
-      CHART SECTION (BAR CHART) 
-      We'll show a side-by-side bar chart of Sole Prop vs. S Corp total 
-      using pure CSS or a simple canvas-based approach.
-    ********************************************************************/
+    /* Bar chart with 4 bars */
     .chart-section {
       text-align: center;
       margin-bottom: 2rem;
     }
     #chartCanvas {
       width: 100%;
-      max-width: 500px;
+      max-width: 600px;
       height: 300px;
       background-color: #fafafa;
       margin: 0 auto;
@@ -405,16 +278,9 @@
       border-radius: 4px;
     }
 
-    /* 
-      We might also do a simple bar container 
-      if we attempt pure CSS bars. 
-      But let's go with a <canvas> for demonstration. 
-    */
-
-    /********************************************************************
-      SECONDARY CONTENT (ABOUT / DISCLAMERS) 
-      We'll place them AFTER the calculator so it is truly front & center.
-    ********************************************************************/
+    /**************************************************************************************
+      5) INFO / DISCLAIMER SECTION
+    **************************************************************************************/
     .info-section {
       padding: 3rem 1rem;
       background-color: #fefefe;
@@ -439,9 +305,9 @@
       line-height: 1.6;
     }
 
-    /********************************************************************
-      FOOTER 
-    ********************************************************************/
+    /**************************************************************************************
+      6) FOOTER
+    **************************************************************************************/
     .footer {
       background-color: #222;
       color: var(--brand-white);
@@ -450,70 +316,69 @@
       margin-top: 3rem;
     }
 
-    /********************************************************************
-      RESPONSIVE BREAKPOINTS
-    ********************************************************************/
+    /**************************************************************************************
+      7) RESPONSIVE BREAKPOINTS
+    **************************************************************************************/
     @media (max-width: 900px) {
       .results-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr; /* Then 2 columns */
+        row-gap: 2rem;
       }
     }
     @media (max-width: 600px) {
-      .navbar-wrapper {
+      .navbar-container {
         flex-direction: column;
       }
       .navbar-menu {
         margin-top: 1rem;
       }
-      .calc-title h1 {
-        font-size: 1.4rem;
+      .results-grid {
+        grid-template-columns: 1fr; /* 1 column on small screens */
       }
-      .results-header h2 {
-        font-size: 1.2rem;
+      .calc-header h1 {
+        font-size: 1.4rem;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- 
-    #################################################################
-    NAVIGATION BAR
-    #################################################################
-  -->
+  <!-- ======================================================================================
+       NAVBAR
+  ====================================================================================== -->
   <header class="navbar">
-    <div class="container navbar-wrapper">
+    <div class="container navbar-container">
       <div class="navbar-logo">CPA On Fire</div>
       <ul class="navbar-menu">
         <li><a href="#calculatorSection">Calculator</a></li>
         <li><a href="#infoSection">Info</a></li>
-        <li><a href="#footerID">Contact</a></li>
       </ul>
     </div>
   </header>
 
-  <!-- 
-    #################################################################
-    CALCULATOR SECTION (FRONT AND CENTER)
-    #################################################################
-  -->
+  <!-- ======================================================================================
+       CALCULATOR SECTION (FRONT AND CENTER)
+  ====================================================================================== -->
   <section class="calculator-section" id="calculatorSection">
     <div class="calc-container">
-      <!-- Title / Intro -->
-      <div class="calc-title">
-        <h1>S Corp vs. Sole Prop Calculator</h1>
+      <div class="calc-header">
+        <h1>Sole Prop vs. Partnership vs. S Corp vs. C Corp</h1>
         <p>
-          Welcome to the ultimate S Corp calculator. Adjust the inputs below to see 
-          how much you might save by electing S Corp status compared to remaining 
-          a sole proprietor. We’ve included advanced features like multiple owners, 
-          health insurance, retirement contributions, and a full breakdown table.
+          Discover approximate total taxes under four common structures using 
+          basic net income and salary inputs. This includes:
         </p>
+        <ul style="max-width:600px; margin:0 auto; color:#555;">
+          <li>Sole Proprietorship (self-employment tax)</li>
+          <li>Partnership (similar self-employment logic for active partners)</li>
+          <li>S Corporation (payroll tax on salary + leftover distributions)</li>
+          <li>C Corporation (payroll tax on salary + corporate tax + dividend tax)</li>
+        </ul>
       </div>
 
       <!-- Step 1: Net Income Slider -->
       <div class="calc-step">
-        <h2>1. Your Annual Net Income</h2>
-        <p>Slide to set your estimated net business profit before paying yourself a salary.</p>
+        <h2>1) Annual Net Income</h2>
+        <p>Estimated net business profit before owner salary (for corp scenarios).</p>
         <div class="slider-group">
           <label class="slider-label" for="netIncomeRange">Net Income ($10k - $500k):</label>
           <input
@@ -529,10 +394,10 @@
         </div>
       </div>
 
-      <!-- Step 2: Owner Salary -->
+      <!-- Step 2: Owner Salary Slider -->
       <div class="calc-step">
-        <h2>2. Reasonable Owner Salary</h2>
-        <p>If you file S Corp, the IRS requires you take a “reasonable” salary. Adjust as needed.</p>
+        <h2>2) Reasonable Owner Salary (S/C Corp)</h2>
+        <p>For S & C Corps, the portion considered W-2 wages. Sole Prop/Partnership ignore this.</p>
         <div class="slider-group">
           <label class="slider-label" for="ownerSalaryRange">Owner Salary ($20k - $200k):</label>
           <input
@@ -548,13 +413,10 @@
         </div>
       </div>
 
-      <!-- Step 3: Extra S Corp Fees -->
+      <!-- Step 3: Additional Fees (S Corp, optional for C Corp if you'd like) -->
       <div class="calc-step">
-        <h2>3. Additional S Corp Fees</h2>
-        <p>
-          Enter any extra costs like payroll service fees, extra tax prep fees, 
-          or other annual S Corp-related expenses.
-        </p>
+        <h2>3) Additional S Corp Costs</h2>
+        <p>Annual fees for payroll, extra tax prep, etc. Typically S Corp. (Set to 0 if none.)</p>
         <div class="form-group">
           <label class="slider-label" for="extraFees">Additional Annual Costs:</label>
           <input
@@ -566,264 +428,147 @@
         </div>
       </div>
 
-      <!-- Step 4: Choose State -->
-      <div class="calc-step">
-        <h2>4. Select Your State</h2>
-        <p>Some states (e.g., CA, IL) impose extra fees or franchise taxes for S Corps.</p>
-        <div class="form-group">
-          <label class="slider-label" for="stateSelect">Business State:</label>
-          <select id="stateSelect">
-            <option value="none">-- Select --</option>
-            <option value="ca">California (CA)</option>
-            <option value="il">Illinois (IL)</option>
-            <option value="other">Other / Not Listed</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Multi-Owner Toggle -->
-      <div class="owners-toggle-area">
-        <h3>Multiple Owners?</h3>
-        <p>
-          If your S Corp has multiple owners, you might want to distribute 
-          the net income and salary among them. This is a simplified approach. 
-          If you do not have multiple owners, leave it off.
-        </p>
-        <label>
-          <input type="checkbox" id="multiOwnerCheck" onchange="toggleMultiOwner()" />
-          Enable Multi-Owner Mode
-        </label>
-        <div id="ownerInputs" style="display:none; margin-top:1rem;">
-          <p>Number of Owners:</p>
-          <input type="number" id="numOwners" value="2" min="2" max="10" />
-          <p style="margin-top:0.75rem; font-size:0.9rem; color:#666;">
-            * In this simplified version, we’ll assume each owner takes an equal share of net income 
-            and an equal share of the salary. 
-          </p>
-        </div>
-      </div>
-
-      <!-- Extra Deductions for Health Insurance, Retirement, etc. -->
-      <div class="extra-deductions-area">
-        <h3>Optional Deductions / Expenses</h3>
-        <p>Add approximate amounts you might deduct for health insurance, retirement, etc.</p>
-        <div class="deductions-group">
-          <div class="deduction-item">
-            <label for="healthInsDeduction">Annual Health Insurance Premiums</label>
-            <input
-              type="number"
-              id="healthInsDeduction"
-              placeholder="e.g. 5000"
-              value="0"
-            />
-          </div>
-          <div class="deduction-item">
-            <label for="retirementDeduction">Retirement Contributions</label>
-            <input
-              type="number"
-              id="retirementDeduction"
-              placeholder="e.g. 10000"
-              value="0"
-            />
-          </div>
-        </div>
-        <p style="margin-top:1rem; font-size:0.85rem; color:#999;">
-          * These won't drastically affect payroll taxes but could lower net taxable income 
-          in an S Corp scenario or offset profits in a sole prop scenario. 
-          Implementation below is purely illustrative.
-        </p>
-      </div>
-
-      <!-- Calculate Button -->
       <div class="calc-btn-wrap">
-        <button class="calc-btn" onclick="calculateResults()">Calculate Savings</button>
+        <button class="calc-btn" onclick="calculateAllEntities()">Calculate Taxes</button>
       </div>
 
       <!-- RESULTS SECTION -->
       <div class="results-section" id="resultsSection">
         <div class="results-header">
           <h2>Your Results</h2>
-          <p>A comparison of approximate total taxes/fees in each scenario, plus any potential savings.</p>
+          <p>Below are the approximate total taxes/fees under each entity type.</p>
         </div>
 
-        <!-- Two-Column Cards -->
+        <!-- 4 Columns: Sole Prop, Partnership, S Corp, C Corp -->
         <div class="results-grid">
-          <div class="results-card" id="solePropCard">
-            <h3>Sole Proprietorship</h3>
-            <p class="results-line" id="sp-seTax"></p>
-            <p class="results-line" id="sp-stateTax"></p>
-            <p class="results-line" id="sp-extraDed"></p>
-            <p class="results-line results-bold" id="sp-total"></p>
+          <!-- Sole Prop Card -->
+          <div class="results-card">
+            <h3>Sole Prop</h3>
+            <p class="results-line" id="sp-SEtax"></p>
+            <p class="results-line results-bold" id="sp-Total"></p>
           </div>
-          <div class="results-card" id="sCorpCard">
-            <h3>S Corporation</h3>
-            <p class="results-line" id="sc-payrollTax"></p>
-            <p class="results-line" id="sc-addMedicare"></p>
-            <p class="results-line" id="sc-stateFee"></p>
-            <p class="results-line" id="sc-extraCosts"></p>
-            <p class="results-line results-bold" id="sc-total"></p>
+
+          <!-- Partnership Card -->
+          <div class="results-card">
+            <h3>Partnership</h3>
+            <p class="results-line" id="pt-SEtax"></p>
+            <p class="results-line results-bold" id="pt-Total"></p>
+          </div>
+
+          <!-- S Corp Card -->
+          <div class="results-card">
+            <h3>S Corp</h3>
+            <p class="results-line" id="sc-PayrollTax"></p>
+            <p class="results-line" id="sc-ExtraFees"></p>
+            <p class="results-line results-bold" id="sc-Total"></p>
+          </div>
+
+          <!-- C Corp Card -->
+          <div class="results-card">
+            <h3>C Corp</h3>
+            <p class="results-line" id="cc-PayrollTax"></p>
+            <p class="results-line" id="cc-CorpTax"></p>
+            <p class="results-line" id="cc-DividendTax"></p>
+            <p class="results-line results-bold" id="cc-Total"></p>
           </div>
         </div>
 
-        <div class="results-difference" id="resultsDiff"></div>
-
-        <!-- Show Detailed Breakdown Toggle -->
-        <div class="breakdown-toggle">
-          <label>
-            <input type="checkbox" id="breakdownCheck" onclick="toggleBreakdownTable()" />
-            Show Detailed Breakdown
-          </label>
-        </div>
-
-        <!-- Detailed Breakdown Section -->
-        <div class="breakdown-section" id="breakdownSection">
-          <table class="breakdown-table">
-            <thead>
-              <tr>
-                <th>Step / Calculation</th>
-                <th>Sole Prop Value</th>
-                <th>S Corp Value</th>
-              </tr>
-            </thead>
-            <tbody id="breakdownBody">
-              <!-- We'll fill this dynamically with JS. -->
-            </tbody>
-          </table>
-          <p class="breakdown-note">
-            This breakdown follows the official approach (92.35% net, Social Security up to wage base, 
-            2.9% Medicare on all net, optional Additional Medicare tax, etc.).
-            For multi-owner scenarios, we do a simplified equal-split approach.
-          </p>
-        </div>
-
-        <!-- Chart Section for Visual Comparison -->
+        <!-- We can highlight which is cheapest or difference, but let's do a bar chart. -->
         <div class="chart-section">
-          <canvas id="chartCanvas" width="500" height="300"></canvas>
+          <canvas id="chartCanvas" width="600" height="300"></canvas>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 
-    #################################################################
-    SECONDARY INFO SECTION 
-    (After the calculator, to keep the calculator front & center)
-    #################################################################
-  -->
+  <!-- ======================================================================================
+       SECONDARY INFO / DISCLAIMER
+  ====================================================================================== -->
   <section class="info-section" id="infoSection">
     <div class="info-container">
       <div class="info-title">
-        <h2>About This Calculator</h2>
+        <h2>Disclaimer & Notes</h2>
       </div>
       <div class="info-content">
         <p>
-          This advanced calculator uses the recognized IRS approach to self-employment tax: 
-          first multiplying net business income by 92.35% to determine net earnings, 
-          then applying Social Security (12.4%) up to the annual wage base and 
-          Medicare (2.9%) on all net earnings. 
-          For S Corps, it applies those payroll taxes only to your chosen salary, 
-          plus additional fees and potential state franchise taxes.
+          This calculator uses simplified assumptions for demonstration. Actual tax results 
+          depend on your unique situation, potential state taxes, changing laws, 
+          and personal deductions. Consult a tax professional for a definitive strategy.
         </p>
         <p>
-          New features include multi-owner mode, optional health insurance/retirement 
-          deductions, and a dynamic bar chart. We want you to have the clearest 
-          picture of your potential tax savings possible—but remember, 
-          every business is unique. For a final decision, consult a CPA or tax pro.
+          <strong>Key Points:</strong><br/>
+          - <strong>Sole Prop & Partnership:</strong> We apply official self-employment tax 
+            logic (92.35% net earnings, SS wage base limit, 2.9% Medicare).<br/>
+          - <strong>S Corp:</strong> We assume only the W-2 salary is subject to payroll taxes. 
+            The remaining profit is taken as distributions (no SS/Medicare). We add “extra fees” 
+            if you input them.<br/>
+          - <strong>C Corp:</strong> We assume 21% federal corporate tax on leftover profit 
+            after owner salary, plus a 15% dividend tax on that leftover (100% distributed). 
+            We also apply payroll taxes on the salary portion.
         </p>
         <p>
-          The color scheme has been updated to reflect a more orange hue for CPA On Fire. 
-          If you have further questions or want a thorough custom analysis, 
-          reach out to us at any time. 
+          State-level complexities (like CA franchise fees, multi-layered nexus, 
+          or pass-through entity taxes) are beyond the scope of this simplified calculator.
+        </p>
+        <p>
+          We hope this comparison helps you see broad differences. 
+          For in-depth analysis, reach out to CPA On Fire for professional assistance.
         </p>
       </div>
     </div>
   </section>
 
-  <!-- 
-    #################################################################
-    FOOTER 
-    #################################################################
-  -->
-  <footer class="footer" id="footerID">
-    <p>&copy; 2025 CPA On Fire. All Rights Reserved.</p>
+  <!-- ======================================================================================
+       FOOTER
+  ====================================================================================== -->
+  <footer class="footer">
+    <p>&copy; 2025 CPA On Fire. All rights reserved.</p>
   </footer>
 
-  <!-- 
-    #################################################################
-    BIG JAVASCRIPT BLOCK
-    #################################################################
-    We'll define all logic, including multi-owner splits, 
-    advanced toggles, official SE tax approach with 92.35% factor,
-    Additional Medicare tax, the breakdown table, and a bar chart.
-  -->
+  <!-- ======================================================================================
+       JAVASCRIPT
+  ====================================================================================== -->
   <script>
-    /***************************************************************
-      1) CONSTANTS & THRESHOLDS
-    ***************************************************************/
-    // Social Security wage base (approx. 2023)
+    /***************************************************************************
+      1) CONSTANTS
+    ***************************************************************************/
+    // Social Security Wage Base ~ 2023
     const SS_WAGE_BASE = 160200;
-    
-    // Additional Medicare thresholds
-    // Single: $200k, Married: $250k 
-    // (If implementing full logic for multi-owner, we could do more.)
-    const SINGLE_AMT_THRESHOLD = 200000;
-    const MARRIED_AMT_THRESHOLD = 250000;
 
-    // We'll store array of owners for multi-owner scenario. 
-    // For simplicity, we only do an equal split approach 
-    // if "Multi-Owner" is checked.
+    // We'll assume no additional Medicare logic or advanced toggles for simplicity.
+    // We do official method: netE = gross * 0.9235, then SS + Medicare on that.
 
-    /***************************************************************
+    // C Corp assumptions: 
+    // - 21% corp tax on leftover (Net Income - Salary).
+    // - 15% dividend tax on leftover after corp tax.
+    // - Salary portion subject to payroll tax.
+
+    /***************************************************************************
       2) HELPER FUNCTIONS
-    ***************************************************************/
-    // Format a number as currency
+    ***************************************************************************/
     function toCurrency(num) {
       return '$' + num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 
-    // Official self-employment tax approach for a single owner:
-    // - netEarnings = grossIncome * 0.9235
-    // - SS portion (12.4%) up to wage base
-    // - Medicare portion (2.9%) on all net
-    // - Optionally Additional Medicare if net > threshold
-    function calcSelfEmpTax(income, addlMedicare = false, filingStatus = 'single') {
-      const netEarnings = income * 0.9235;
-
-      // Social Security portion
+    // Calculate official self-employment tax for Sole Prop or Partnership
+    function calcSelfEmpTax(income) {
+      // 1) net earnings
+      const netE = income * 0.9235;
+      // 2) SS portion (12.4% up to wage base)
       let ssTax = 0;
-      if (netEarnings <= SS_WAGE_BASE) {
-        ssTax = netEarnings * 0.124;
+      if (netE <= SS_WAGE_BASE) {
+        ssTax = netE * 0.124;
       } else {
-        // only up to wage base
         ssTax = SS_WAGE_BASE * 0.124;
       }
-
-      // Medicare portion
-      const medTax = netEarnings * 0.029;
-
-      // Additional Medicare
-      let addlMed = 0;
-      if (addlMedicare) {
-        // check threshold
-        let threshold = (filingStatus === 'married') ? MARRIED_AMT_THRESHOLD : SINGLE_AMT_THRESHOLD;
-        if (netEarnings > threshold) {
-          addlMed = (netEarnings - threshold) * 0.009;
-          if (addlMed < 0) addlMed = 0;
-        }
-      }
-      return {
-        netEarnings: netEarnings,
-        socialSec: ssTax,
-        medicare: medTax,
-        addlMedicare: addlMed,
-        total: ssTax + medTax + addlMed
-      };
+      // 3) Medicare portion (2.9%)
+      const medTax = netE * 0.029;
+      // total
+      return ssTax + medTax;
     }
 
-    // For an S Corp salary, we skip the 92.35% reduction 
-    // since wages are wages. The rest is the same approach 
-    // for SS, Medicare, Additional Medicare.
-    function calcPayrollTax(salary, addlMedicare = false, filingStatus = 'single') {
+    // Calculate payroll tax on the salary portion for S or C corp
+    function calcPayrollTax(salary) {
       let ssTax = 0;
       if (salary <= SS_WAGE_BASE) {
         ssTax = salary * 0.124;
@@ -831,32 +576,99 @@
         ssTax = SS_WAGE_BASE * 0.124;
       }
       const medTax = salary * 0.029;
+      return ssTax + medTax;
+    }
 
-      let addlMed = 0;
-      if (addlMedicare) {
-        const threshold = (filingStatus === 'married') ? MARRIED_AMT_THRESHOLD : SINGLE_AMT_THRESHOLD;
-        if (salary > threshold) {
-          addlMed = (salary - threshold) * 0.009;
-          if (addlMed < 0) addlMed = 0;
-        }
+    /***************************************************************************
+      3) MAIN CALCULATION FOR ALL 4 ENTITY TYPES
+    ***************************************************************************/
+    function calculateAllEntities() {
+      // Grab user inputs
+      const netIncome = parseFloat(document.getElementById('netIncomeRange').value) || 0;
+      const ownerSalary = parseFloat(document.getElementById('ownerSalaryRange').value) || 0;
+      const extraFees = parseFloat(document.getElementById('extraFees').value) || 0;
+
+      // Basic check: if salary > net income for corp scenarios, warn
+      if (ownerSalary > netIncome) {
+        alert("Owner salary cannot exceed net income for S or C Corp scenario.");
+        return;
       }
-      return {
-        wage: salary,
-        socialSec: ssTax,
-        medicare: medTax,
-        addlMedicare: addlMed,
-        total: ssTax + medTax + addlMed
-      };
+
+      // 1) Sole Prop
+      const spSETax = calcSelfEmpTax(netIncome); 
+      const spTotal = spSETax; // no extra fees in this example
+
+      // 2) Partnership
+      // We treat an active partner's entire share as subject to SE tax, same logic as sole prop
+      const ptSETax = calcSelfEmpTax(netIncome);
+      const ptTotal = ptSETax;
+
+      // 3) S Corp
+      const scPayrollTax = calcPayrollTax(ownerSalary);
+      // leftover distribution avoids SS/Med. Add extra fees
+      const scTotal = scPayrollTax + extraFees;
+
+      // 4) C Corp
+      // Salary portion taxed at payrollTax 
+      // leftover = (netIncome - ownerSalary)
+      // corporate tax at 21%, leftoverAfterCorp = leftover * (1 - 0.21)
+      // dividend tax at 15% on leftoverAfterCorp
+      // total c corp tax = payrollTax + leftover * 0.21 + leftoverAfterCorp * 0.15
+      const leftover = netIncome - ownerSalary;
+      let ccPayrollTax = calcPayrollTax(ownerSalary);
+      if (leftover < 0) {
+        // if leftover is negative, no corporate profit
+        // but let's just clamp it to 0
+        // realistically you'd have a net loss scenario, but let's keep it simple
+      }
+      const corpTax = (leftover > 0) ? leftover * 0.21 : 0;
+      const leftoverAfterCorp = (leftover > 0) ? leftover * (1 - 0.21) : 0;
+      const dividendTax = leftoverAfterCorp * 0.15;
+      const ccTotal = ccPayrollTax + corpTax + dividendTax;
+
+      // Update UI
+      // Sole Prop
+      document.getElementById('sp-SEtax').textContent = 
+        "Self-Employment Tax: " + toCurrency(spSETax);
+      document.getElementById('sp-Total').textContent = 
+        "Total: " + toCurrency(spTotal);
+
+      // Partnership
+      document.getElementById('pt-SEtax').textContent = 
+        "Self-Employment Tax: " + toCurrency(ptSETax);
+      document.getElementById('pt-Total').textContent = 
+        "Total: " + toCurrency(ptTotal);
+
+      // S Corp
+      document.getElementById('sc-PayrollTax').textContent =
+        "Payroll Tax (Salary): " + toCurrency(scPayrollTax);
+      document.getElementById('sc-ExtraFees').textContent =
+        "Extra S Corp Fees: " + toCurrency(extraFees);
+      document.getElementById('sc-Total').textContent =
+        "Total: " + toCurrency(scTotal);
+
+      // C Corp
+      document.getElementById('cc-PayrollTax').textContent =
+        "Payroll Tax (Salary): " + toCurrency(ccPayrollTax);
+      document.getElementById('cc-CorpTax').textContent =
+        "Corporate Tax (21%): " + toCurrency(corpTax);
+      document.getElementById('cc-DividendTax').textContent =
+        "Dividend Tax (15%): " + toCurrency(dividendTax);
+      document.getElementById('cc-Total').textContent =
+        "Total: " + toCurrency(ccTotal);
+
+      // Show results
+      const resultsSec = document.getElementById('resultsSection');
+      resultsSec.style.display = 'block';
+      resultsSec.scrollIntoView({ behavior: 'smooth' });
+
+      // Draw bar chart
+      drawBarChart(spTotal, ptTotal, scTotal, ccTotal);
     }
 
-    // Toggle for multi-owner UI
-    function toggleMultiOwner() {
-      const check = document.getElementById('multiOwnerCheck').checked;
-      const ownerInputs = document.getElementById('ownerInputs');
-      ownerInputs.style.display = check ? 'block' : 'none';
-    }
-
-    // Update slider display
+    /***************************************************************************
+      4) UI HELPER: Update Slider
+    ***************************************************************************/
     function updateNetIncomeValue(val) {
       document.getElementById('netIncomeValue').textContent = '$' + parseInt(val).toLocaleString();
     }
@@ -864,355 +676,63 @@
       document.getElementById('ownerSalaryValue').textContent = '$' + parseInt(val).toLocaleString();
     }
 
-    // Show or hide breakdown
-    function toggleBreakdownTable() {
-      const breakdownSection = document.getElementById('breakdownSection');
-      const checked = document.getElementById('breakdownCheck').checked;
-      breakdownSection.style.display = checked ? 'block' : 'none';
-      // If it's visible, we might re-fill it after the fact. 
-      // We'll do that automatically in the calculation function.
-    }
-
-    /***************************************************************
-      3) MAIN CALCULATION
-    ***************************************************************/
-    function calculateResults() {
-      // 1) Gather inputs
-      const netIncomeRaw = parseFloat(document.getElementById('netIncomeRange').value) || 0;
-      const ownerSalaryRaw = parseFloat(document.getElementById('ownerSalaryRange').value) || 0;
-      const extraFees = parseFloat(document.getElementById('extraFees').value) || 0;
-      const stateVal = document.getElementById('stateSelect').value || 'none';
-
-      // Check multi-owner
-      const isMultiOwner = document.getElementById('multiOwnerCheck').checked;
-      let numOwners = 1;
-      if (isMultiOwner) {
-        numOwners = parseInt(document.getElementById('numOwners').value) || 2;
-        if (numOwners < 2) numOwners = 2;
-      }
-
-      // Health insurance / retirement 
-      const healthInsVal = parseFloat(document.getElementById('healthInsDeduction').value) || 0;
-      const retirementVal = parseFloat(document.getElementById('retirementDeduction').value) || 0;
-
-      // We'll add toggles for Additional Medicare 
-      // For this big code, let's just do a random assumption 
-      // that it's always single if net > $200k 
-      // or effectively "on" if net is above threshold.
-      // Alternatively, we could add a separate checkbox, 
-      // but let's keep it simpler for now.
-      const usesAddlMedicare = true; // we can assume yes
-      const filingStatus = 'single'; // or 'married'
-
-      // 2) Basic validation: Salary can't exceed net income (per owner if multi?)
-      // We'll distribute netIncome / ownerSalary among owners equally for demonstration:
-      const netIncomePerOwner = netIncomeRaw / numOwners;
-      const ownerSalaryPerOwner = ownerSalaryRaw / numOwners;
-      // If any single owner's salary > that owner's share of net income, 
-      // we can throw a warning. 
-      if (ownerSalaryPerOwner > netIncomePerOwner) {
-        alert("Owner salary cannot exceed that owner's share of net income. Lower the salary or net owners.");
-        return;
-      }
-
-      // 3) Calculate Sole Prop taxes
-      // If multi-owner? Actually, that typically implies a partnership 
-      // (not a single sole prop). But let's just multiply the single-owner logic 
-      // by the number of owners for a quick approach. 
-      // In reality, multi-owner wouldn't be a "sole" prop, but let's do it anyway for demonstration.
-      const spEach = calcSelfEmpTax(netIncomePerOwner, usesAddlMedicare, filingStatus);
-      const spTotalTax = spEach.total * numOwners;
-
-      // We'll incorporate healthInsVal + retirementVal as a direct offset 
-      // for net income if we like, or just display them. 
-      // For a real approach, you'd reduce the net business income. 
-      // We'll just track them as "deductions" for the scenario's difference in total cost.
-      // But keep it simple: we'll treat them as if they reduce Sole Prop's profit 
-      // and reduce S Corp's distribution or salary. 
-      // Let's just show them as lines in the result for now, 
-      // but not recalculate net income with them, to keep code from exploding further.
-      let spTotal = spTotalTax;
-      let spExtraDed = healthInsVal + retirementVal; 
-      // If we wanted to subtract them from netIncome, we'd do it earlier, 
-      // but let's just show them as "Additional Deductions" for demonstration. 
-      // We'll do no real effect on final "Sole Prop total" to keep it simpler. 
-      // If you'd prefer them to reduce the net income, do so.
-
-      // State tax for sole prop (some states do have extra fees).
-      let spStateTax = 0;
-      if (stateVal === 'ca') {
-        // Typically no direct sole prop franchise fee, but let's just do 0
-        spStateTax = 0;
-      } else if (stateVal === 'il') {
-        spStateTax = 0;
-      }
-      const spGrandTotal = spTotal + spStateTax; 
-      // We'll not add spExtraDed to spGrandTotal, since it's a personal expense. 
-      // We'll display it though.
-
-      // 4) Calculate S Corp taxes
-      const scEachPayroll = calcPayrollTax(ownerSalaryPerOwner, usesAddlMedicare, filingStatus);
-      const scTotalPayrollTax = scEachPayroll.total * numOwners;
-
-      // Add state franchise fee for S Corp:
-      let scStateFee = 0;
-      if (stateVal === 'ca') {
-        scStateFee = 800; // min franchise
-      } else if (stateVal === 'il') {
-        scStateFee = 175;
-      }
-      // multiply by owners? Actually, the franchise fee is typically per entity, 
-      // not per owner. We'll keep it single. 
-      // Also add extraFees for the entire entity once.
-      // Health insurance / retirement might reduce S Corp wages or net profit, 
-      // but let's just show them as lines for demonstration.
-      const scGrandTotal = scTotalPayrollTax + scStateFee + extraFees;
-
-      // 5) Compare
-      const diff = spGrandTotal - scGrandTotal;
-
-      // 6) Update UI
-      // Sole Prop
-      document.getElementById('sp-seTax').textContent = "Self-Employment Tax: " + toCurrency(spTotal);
-      if (spStateTax > 0) {
-        document.getElementById('sp-stateTax').textContent = "State Fees: " + toCurrency(spStateTax);
-      } else {
-        document.getElementById('sp-stateTax').textContent = "";
-      }
-      if (spExtraDed > 0) {
-        document.getElementById('sp-extraDed').textContent = "Non-Entity Deductions (HI/Ret): " + toCurrency(spExtraDed);
-      } else {
-        document.getElementById('sp-extraDed').textContent = "";
-      }
-      document.getElementById('sp-total').textContent = "Total: " + toCurrency(spGrandTotal);
-
-      // S Corp
-      const addMed = scEachPayroll.addlMedicare * numOwners;
-      if (scTotalPayrollTax - addMed > 0) {
-        document.getElementById('sc-payrollTax').textContent = 
-          "Payroll Tax (SS+Med): " + toCurrency(scTotalPayrollTax - addMed);
-      } else {
-        document.getElementById('sc-payrollTax').textContent = "";
-      }
-      if (addMed > 0) {
-        document.getElementById('sc-addMedicare').textContent = 
-          "Add'l Medicare Tax: " + toCurrency(addMed);
-      } else {
-        document.getElementById('sc-addMedicare').textContent = "";
-      }
-      if (scStateFee > 0) {
-        document.getElementById('sc-stateFee').textContent = 
-          "State Franchise Fee: " + toCurrency(scStateFee);
-      } else {
-        document.getElementById('sc-stateFee').textContent = "";
-      }
-      if (extraFees > 0) {
-        document.getElementById('sc-extraCosts').textContent = 
-          "Additional S Corp Costs: " + toCurrency(extraFees);
-      } else {
-        document.getElementById('sc-extraCosts').textContent = "";
-      }
-      document.getElementById('sc-total').textContent = 
-        "Total: " + toCurrency(scGrandTotal);
-
-      // difference
-      const diffElem = document.getElementById('resultsDiff');
-      if (diff > 0) {
-        diffElem.textContent = "Estimated Savings with S Corp: " + toCurrency(diff);
-      } else if (diff < 0) {
-        diffElem.textContent = "No savings. S Corp is costlier by " + toCurrency(Math.abs(diff));
-      } else {
-        diffElem.textContent = "No difference in this scenario.";
-      }
-
-      // Show results
-      const resultsDiv = document.getElementById('resultsSection');
-      resultsDiv.style.display = 'block';
-      // Potentially scroll to results
-      resultsDiv.scrollIntoView({ behavior: 'smooth' });
-
-      // 7) Fill breakdown table if toggled on
-      fillBreakdownTable({
-        spTotalTax,
-        spStateTax,
-        spExtraDed,
-        spGrandTotal,
-        scTotalPayrollTax,
-        scStateFee,
-        extraFees,
-        scGrandTotal,
-        diff
-      });
-
-      // 8) Draw bar chart
-      drawBarChart(spGrandTotal, scGrandTotal);
-    }
-
-    /***************************************************************
-      4) BREAKDOWN TABLE
-    ***************************************************************/
-    function fillBreakdownTable(obj) {
-      const breakdownCheck = document.getElementById('breakdownCheck').checked;
-      const breakdownBody = document.getElementById('breakdownBody');
-      // Clear old
-      breakdownBody.innerHTML = "";
-      if (!breakdownCheck) return;
-
-      // We'll add several rows
-      const row1 = makeRow(
-        "Sole Prop SE Tax",
-        toCurrency(obj.spTotalTax),
-        "N/A (S Corp uses payroll tax below)"
-      );
-      breakdownBody.appendChild(row1);
-
-      const row2 = makeRow(
-        "Sole Prop State Fees",
-        obj.spStateTax > 0 ? toCurrency(obj.spStateTax) : "$0",
-        "S Corp State Fee Below"
-      );
-      breakdownBody.appendChild(row2);
-
-      const row3 = makeRow(
-        "Health/Ret Deductions (Sole Prop Info Only)",
-        obj.spExtraDed > 0 ? toCurrency(obj.spExtraDed) : "$0",
-        "S Corp: Shown Separately in Business"
-      );
-      breakdownBody.appendChild(row3);
-
-      const row4 = makeRow(
-        "Sole Prop GRAND TOTAL",
-        toCurrency(obj.spGrandTotal),
-        "Will compare below"
-      );
-      breakdownBody.appendChild(row4);
-
-      const row5 = makeRow(
-        "S Corp Payroll Tax (Employer + Employee)",
-        "N/A in Sole Prop",
-        toCurrency(obj.scTotalPayrollTax)
-      );
-      breakdownBody.appendChild(row5);
-
-      const row6 = makeRow(
-        "S Corp Franchise Fee & Extra Fees",
-        "N/A in Sole Prop",
-        toCurrency(obj.scStateFee + obj.extraFees)
-      );
-      breakdownBody.appendChild(row6);
-
-      const row7 = makeRow(
-        "S Corp GRAND TOTAL",
-        "N/A in Sole Prop",
-        toCurrency(obj.scGrandTotal)
-      );
-      breakdownBody.appendChild(row7);
-
-      const row8 = makeRow(
-        "DIFFERENCE (SP - SC)",
-        obj.diff > 0 ? toCurrency(obj.diff) : toCurrency(obj.diff),
-        (obj.diff > 0 ? "S Corp Saves" : obj.diff < 0 ? "S Corp Costs More" : "Equal")
-      );
-      breakdownBody.appendChild(row8);
-    }
-
-    function makeRow(label, spVal, scVal) {
-      const tr = document.createElement('tr');
-      const tdLabel = document.createElement('td');
-      tdLabel.textContent = label;
-      const tdSp = document.createElement('td');
-      tdSp.textContent = spVal;
-      const tdSc = document.createElement('td');
-      tdSc.textContent = scVal;
-      tr.appendChild(tdLabel);
-      tr.appendChild(tdSp);
-      tr.appendChild(tdSc);
-      return tr;
-    }
-
-    /***************************************************************
-      5) SIMPLE BAR CHART
-    ***************************************************************/
-    let chartContext = null;  // We'll store a global reference
-    let chartInstance = null; // If we need to re-draw
-
-    function drawBarChart(spValue, scValue) {
+    /***************************************************************************
+      5) BAR CHART (4 Bars)
+    ***************************************************************************/
+    let chartCtx = null;
+    function drawBarChart(spVal, ptVal, scVal, ccVal) {
       const canvas = document.getElementById('chartCanvas');
-      if (!canvas) return; // Safety check
+      if (!canvas) return;
 
-      if (!chartContext) {
-        chartContext = canvas.getContext('2d');
+      if (!chartCtx) {
+        chartCtx = canvas.getContext('2d');
       }
-      // If we have a prior chart instance, clear or reset it
-      if (chartInstance) {
-        chartInstance.clearRect(0, 0, canvas.width, canvas.height);
-      }
+      const ctx = chartCtx;
+      const w = canvas.width;
+      const h = canvas.height;
 
-      // We'll do a simple side-by-side bar approach:
-      const maxVal = Math.max(spValue, scValue) * 1.2; // 20% overhead
-      const chartWidth = canvas.width;
-      const chartHeight = canvas.height;
-      chartContext.clearRect(0, 0, chartWidth, chartHeight);
+      // Clear previous
+      ctx.clearRect(0, 0, w, h);
 
-      // define bar dimensions
-      const barWidth = 80; 
-      const barSpacing = 60; 
-      const xStart = (chartWidth - (2 * barWidth + barSpacing)) / 2; 
-      const solePropX = xStart;
-      const sCorpX = xStart + barWidth + barSpacing;
-      const bottom = chartHeight - 30; // 30 px for margin
+      // Find max
+      const maxVal = Math.max(spVal, ptVal, scVal, ccVal) * 1.2; // add 20% space
+      const bottom = h - 30; 
+      const barWidth = 50;
+      const barSpacing = 40;
+      const totalBars = 4;
+      // total width for bars + spacing
+      const totalWidth = totalBars * barWidth + (totalBars - 1) * barSpacing;
+      const startX = (w - totalWidth) / 2;
 
-      // function to scale a value to chart height
+      // Function to scale
       function scaleVal(val) {
-        return (val / maxVal) * (chartHeight - 60); 
+        return (val / maxVal) * (h - 60);
       }
-      const spBarHeight = scaleVal(spValue);
-      const scBarHeight = scaleVal(scValue);
 
-      // draw SP bar
-      chartContext.fillStyle = 'rgba(229,83,40,0.8)'; // brand orange with some alpha
-      chartContext.fillRect(
-        solePropX,
-        bottom - spBarHeight,
-        barWidth,
-        spBarHeight
-      );
+      // Create an array of data:
+      const data = [
+        { label: "Sole Prop", value: spVal },
+        { label: "Partnership", value: ptVal },
+        { label: "S Corp", value: scVal },
+        { label: "C Corp", value: ccVal }
+      ];
 
-      // label
-      chartContext.fillStyle = '#333';
-      chartContext.font = '16px "Open Sans"';
-      chartContext.fillText(
-        "Sole Prop", 
-        solePropX + 5, 
-        bottom + 20
-      );
-      chartContext.fillText(
-        toCurrency(spValue),
-        solePropX, 
-        bottom - spBarHeight - 5
-      );
+      // Draw each bar
+      data.forEach((item, i) => {
+        const x = startX + i * (barWidth + barSpacing);
+        const barHeight = scaleVal(item.value);
+        ctx.fillStyle = 'rgba(229,83,40,0.7)'; // brand orange
+        ctx.fillRect(x, bottom - barHeight, barWidth, barHeight);
 
-      // draw S Corp bar
-      chartContext.fillStyle = 'rgba(229,83,40,0.5)';
-      chartContext.fillRect(
-        sCorpX,
-        bottom - scBarHeight,
-        barWidth,
-        scBarHeight
-      );
-      chartContext.fillStyle = '#333';
-      chartContext.fillText(
-        "S Corp", 
-        sCorpX + 15, 
-        bottom + 20
-      );
-      chartContext.fillText(
-        toCurrency(scValue),
-        sCorpX, 
-        bottom - scBarHeight - 5
-      );
+        // label
+        ctx.fillStyle = '#333';
+        ctx.font = '14px "Open Sans"';
+        // bar label
+        ctx.fillText(item.label, x + 2, bottom + 20);
+        // value label
+        ctx.fillText(toCurrency(item.value), x, bottom - barHeight - 5);
+      });
     }
-
   </script>
 </body>
 </html>
