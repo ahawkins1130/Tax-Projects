@@ -1,24 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Ultimate S Corp Calculator</title>
-  <!-- Link to your external CSS file -->
-  <link rel="stylesheet" href="styles.css" />
-
-  <!-- Optional: Google Fonts (remove if you prefer your own fonts) -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap">
-
-  <!-- Meta tags for responsiveness -->
+  <meta charset="UTF-8">
+  <title>S Corp Calculator (Colorful Slider Version)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- (Optional) Basic SEO meta tags -->
-  <meta name="description" content="A beautiful S Corp Calculator to estimate potential tax savings." />
-  <meta name="keywords" content="S Corp, Calculator, Tax Savings, Business" />
-  <meta name="author" content="Your Name or Company" />
+  <!-- Optional: Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap">
+
+  <!-- Link to your external CSS file (styles.css) -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Quick inline style suggestions for color/structure 
+       (You can move these into styles.css if you prefer) -->
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Open Sans', sans-serif;
+      background-color: #f2f2f2;
+    }
+    /* NAVBAR */
+    .navbar {
+      background-color: #1C79C0; /* Vibrant teal/blue color */
+      padding: 0.75rem 1rem;
+    }
+    .navbar .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .navbar .nav-logo {
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 1.25rem;
+    }
+    .navbar .nav-menu {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+    }
+    .navbar .nav-menu li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .navbar .nav-menu li a:hover {
+      text-decoration: underline;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      background: linear-gradient(135deg, #1C79C0 0%, #00ADEF 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: #fff;
+      text-align: center;
+      padding: 0 1rem;
+    }
+    .hero .hero-content {
+      max-width: 700px;
+    }
+    .hero .hero-title {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .hero .hero-subtitle {
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .btn-hero {
+      background-color: #fff;
+      color: #1C79C0;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .btn-hero:hover {
+      background-color: #ffd700;
+      color: #000;
+    }
+
+    /* ABOUT SECTION */
+    .about-section {
+      padding: 2rem 1rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .about-section h2 {
+      margin-bottom: 1rem;
+      color: #1C79C0;
+    }
+    .about-section p {
+      margin-bottom: 0.75rem;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    /* CALCULATOR SECTION */
+    .calculator-section {
+      background-color: #fff;
+      padding: 2rem 1rem;
+    }
+    .calculator-container {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .calculator-container h2 {
+      color: #1C79C0;
+      margin-bottom: 0.5rem;
+    }
+    .calculator-container p {
+      color: #555;
+      margin-bottom: 1.5rem;
+    }
+    .slider-group {
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+    .slider-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+    .slider-group input[type="range"] {
+      width: 100%;
+    }
+    .slider-value {
+      display: inline-block;
+      margin-left: 10px;
+      font-weight: 600;
+      color: #1C79C0;
+    }
+
+    /* Button */
+    .btn-calc {
+      background-color: #1C79C0;
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    .btn-calc:hover {
+      background-color: #00ADEF;
+    }
+
+    /* RESULTS */
+    .results {
+      margin-top: 2rem;
+      background-color: #f9f9f9;
+      padding: 1.5rem;
+      border-radius: 6px;
+      text-align: left;
+    }
+    .results h3 {
+      margin-bottom: 1rem;
+      color: #1C79C0;
+    }
+    .results p {
+      margin: 0.5rem 0;
+      color: #333;
+    }
+    .hidden {
+      display: none;
+    }
+
+    /* DISCLAIMER & CTA */
+    .disclaimer-cta {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+      background-color: #f2f2f2;
+    }
+    .disclaimer-container,
+    .cta-container {
+      max-width: 800px;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .disclaimer-container h3,
+    .cta-container h3 {
+      color: #1C79C0;
+      margin-bottom: 1rem;
+    }
+    .disclaimer-container p,
+    .cta-container p {
+      color: #333;
+      line-height: 1.6;
+    }
+    .btn-contact {
+      background-color: #1C79C0;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .btn-contact:hover {
+      background-color: #00ADEF;
+    }
+
+    /* FOOTER */
+    .footer {
+      background-color: #1C79C0;
+      color: #fff;
+      text-align: center;
+      padding: 1rem;
+    }
+    .footer p {
+      margin: 0;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .hero .hero-title {
+        font-size: 1.8rem;
+      }
+      .hero .hero-subtitle {
+        font-size: 1rem;
+      }
+      .disclaimer-cta {
+        padding: 1rem;
+      }
+      .navbar .nav-menu {
+        display: none; /* For simplicity, or you can implement a burger menu */
+      }
+    }
+  </style>
 </head>
 <body>
-  <!-- ========== NAVBAR ========== -->
+  <!-- ======== NAVBAR ======== -->
   <nav class="navbar">
     <div class="nav-container">
       <a href="#" class="nav-logo">S Corp Saver</a>
@@ -31,87 +258,82 @@
     </div>
   </nav>
 
-  <!-- ========== HERO SECTION ========== -->
-  <section id="hero" class="hero">
-    <!-- Replace with your own image URL, or remove the image entirely if desired -->
-    <img
-      src="https://via.placeholder.com/1200x400/007bff/ffffff?text=Beautiful+S+Corp+Hero+Image"
-      alt="S Corp Hero"
-      class="hero-image"
-    />
-    <div class="hero-overlay">
-      <h1 class="hero-title">Maximize Your S Corp Savings</h1>
-      <p class="hero-subtitle">
-        Estimate how much you can save on taxes and plan for the future of your business.
-      </p>
-      <a href="#calculator" class="btn btn-hero">Start Calculating</a>
+  <!-- ======== HERO SECTION ======== -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Optimize Your S Corp Savings</h1>
+      <p class="hero-subtitle">Use our interactive sliders to discover your potential tax savings!</p>
+      <a href="#calculator" class="btn-hero">Try the Calculator</a>
     </div>
   </section>
 
-  <!-- ========== ABOUT SECTION ========== -->
-  <section id="about" class="about-section">
-    <div class="about-container">
-      <h2>About Our Calculator</h2>
-      <p>
-        Our S Corp Calculator is designed to provide a rough estimate of potential tax savings 
-        when operating your business as an S Corporation versus a Sole Proprietorship/LLC 
-        (disregarded entity). While every effort has been made to ensure accuracy, tax 
-        situations vary widely, and this tool should be considered a starting point for 
-        discussions with a qualified professional.
-      </p>
-      <p>
-        We continuously update our assumptions to reflect current tax rates and thresholds, 
-        but be aware that federal and state laws change frequently. Always consult with a 
-        CPA or tax advisor to interpret these results and customize them to your situation.
-      </p>
-    </div>
+  <!-- ======== ABOUT SECTION ======== -->
+  <section class="about-section" id="about">
+    <h2>About This Calculator</h2>
+    <p>
+      This calculator estimates the potential tax savings by filing as an S Corporation
+      instead of a Sole Proprietorship or Single-Member LLC. It takes into account basic 
+      assumptions regarding self-employment tax, payroll tax, and extra entity-level 
+      expenses. Actual results may vary based on unique business circumstances.
+    </p>
+    <p>
+      We regularly update this tool with current tax rates, but please note that 
+      federal and state regulations can change. Always consult a qualified professional
+      to confirm these figures for your specific situation.
+    </p>
   </section>
 
-  <!-- ========== CALCULATOR SECTION ========== -->
-  <section id="calculator" class="calculator-section">
+  <!-- ======== CALCULATOR SECTION ======== -->
+  <section class="calculator-section" id="calculator">
     <div class="calculator-container">
       <h2>S Corp Tax Savings Calculator</h2>
-      <p>Fill out the fields below to see potential tax savings.</p>
+      <p>Adjust the sliders below to approximate your annual savings.</p>
 
-      <form id="taxForm" class="calc-form">
-        <!-- Net Income -->
-        <div class="form-group">
-          <label for="netIncome">Estimated Annual Net Income (before salary)</label>
-          <input
-            type="number"
-            id="netIncome"
-            placeholder="e.g. 100000"
-            required
-          />
-        </div>
+      <!-- SLIDER: Net Income -->
+      <div class="slider-group">
+        <label for="netIncomeRange">Estimated Annual Net Income (before salary)</label>
+        <input
+          type="range"
+          id="netIncomeRange"
+          min="10000"
+          max="500000"
+          step="1000"
+          value="100000"
+          oninput="updateNetIncomeValue(this.value)"
+        />
+        <span class="slider-value" id="netIncomeValue">$100,000</span>
+      </div>
 
-        <!-- Owner Salary -->
-        <div class="form-group">
-          <label for="ownerSalary">Reasonable Owner Salary</label>
-          <input
-            type="number"
-            id="ownerSalary"
-            placeholder="e.g. 60000"
-            required
-          />
-        </div>
+      <!-- SLIDER: Owner Salary -->
+      <div class="slider-group">
+        <label for="ownerSalaryRange">Reasonable Owner Salary</label>
+        <input
+          type="range"
+          id="ownerSalaryRange"
+          min="20000"
+          max="200000"
+          step="1000"
+          value="60000"
+          oninput="updateOwnerSalaryValue(this.value)"
+        />
+        <span class="slider-value" id="ownerSalaryValue">$60,000</span>
+      </div>
 
-        <!-- Extra Fees (S Corp) -->
-        <div class="form-group">
-          <label for="extraFees">Additional S Corp Costs (annual)</label>
-          <input
-            type="number"
-            id="extraFees"
-            placeholder="e.g. 2000"
-            required
-          />
-        </div>
+      <!-- Additional Fees -->
+      <div class="slider-group">
+        <label for="extraFees">Additional S Corp Costs (annual)</label>
+        <input
+          type="number"
+          id="extraFees"
+          placeholder="e.g. 2000"
+          value="2000"
+        />
+      </div>
 
-        <!-- Calculate Button -->
-        <button type="button" class="btn btn-calc" onclick="calculateTaxes()">Calculate Savings</button>
-      </form>
+      <!-- Calculate Button -->
+      <button class="btn-calc" onclick="calculateTaxes()">Calculate Savings</button>
 
-      <!-- Results Output -->
+      <!-- RESULTS -->
       <div id="results" class="results hidden">
         <h3>Your Results</h3>
         <p id="solePropTax"></p>
@@ -121,70 +343,71 @@
     </div>
   </section>
 
-  <!-- ========== DISCLAIMER & CTA SECTION ========== -->
+  <!-- ======== DISCLAIMER & CTA ======== -->
   <section class="disclaimer-cta">
     <div class="disclaimer-container">
       <h3>Disclaimer</h3>
       <p>
-        This tool is for illustrative purposes only and does not constitute legal 
-        or tax advice. Tax laws vary by state and individual circumstances. Always 
-        consult with a qualified tax professional or CPA to fully understand 
-        your specific situation.
+        This tool is designed for general guidance only and does not constitute
+        legal or tax advice. Always seek professional assistance for a detailed 
+        analysis of your unique tax situation.
       </p>
     </div>
     <div class="cta-container" id="contact">
-      <h3>Ready to Go Further?</h3>
+      <h3>Contact Us</h3>
       <p>
-        We specialize in helping businesses of all sizes optimize their tax 
-        strategies. Contact us today for a personalized consultation and 
-        secure your financial future.
+        Ready to turn these estimates into reality? Let us help you navigate the 
+        complexities of S Corp taxation for maximum benefit.
       </p>
-      <a href="mailto:someone@example.com" class="btn btn-contact">Contact Us</a>
+      <a href="mailto:someone@example.com" class="btn-contact">Get in Touch</a>
     </div>
   </section>
 
-  <!-- ========== FOOTER ========== -->
+  <!-- ======== FOOTER ======== -->
   <footer class="footer">
     <p>&copy; 2025 Your Company Name. All rights reserved.</p>
   </footer>
 
-  <!-- ========== SCRIPTS ========== -->
+  <!-- ======== SCRIPTS ======== -->
   <script>
-    // -------------------------------------------------
-    //   Calculation Logic
-    //   (Feel free to modify if you have different
-    //   assumptions or more complex calculations)
-    // -------------------------------------------------
-    function calculateTaxes() {
-      // Grab the form values
-      const netIncomeInput = document.getElementById("netIncome");
-      const ownerSalaryInput = document.getElementById("ownerSalary");
-      const extraFeesInput = document.getElementById("extraFees");
+    // Update displayed Net Income slider value
+    function updateNetIncomeValue(val) {
+      document.getElementById("netIncomeValue").textContent = '$' + parseInt(val).toLocaleString();
+    }
 
-      // Convert to numbers (or 0 if invalid)
-      const netIncome = parseFloat(netIncomeInput.value) || 0;
-      const ownerSalary = parseFloat(ownerSalaryInput.value) || 0;
+    // Update displayed Owner Salary slider value
+    function updateOwnerSalaryValue(val) {
+      document.getElementById("ownerSalaryValue").textContent = '$' + parseInt(val).toLocaleString();
+    }
+
+    function calculateTaxes() {
+      // Slider values
+      const netIncomeRange = document.getElementById("netIncomeRange");
+      const ownerSalaryRange = document.getElementById("ownerSalaryRange");
+
+      const netIncome = parseFloat(netIncomeRange.value) || 0;
+      const ownerSalary = parseFloat(ownerSalaryRange.value) || 0;
+
+      // Additional fees from text input
+      const extraFeesInput = document.getElementById("extraFees");
       const extraFees = parseFloat(extraFeesInput.value) || 0;
 
-      // Basic validation: if netIncome < ownerSalary, warn the user
+      // Basic validation
       if (ownerSalary > netIncome) {
-        alert("Owner salary cannot exceed net income in this example calculation.");
+        alert("Owner salary cannot exceed net income for this example calculation.");
         return;
       }
 
-      // ~~~ Sole Prop Calculation ~~~
-      // Assume 15.3% self-employment tax for the entire net income (simplified).
+      // Sole Prop: approximate self-employment tax at 15.3% (simplified)
       const solePropTax = netIncome * 0.153;
 
-      // ~~~ S Corp Calculation ~~~
-      // 15.3% total payroll tax on W-2 wages (owner salary) plus additional fees
+      // S Corp: 15.3% on salary plus extra fees
       const sCorpPayrollTax = ownerSalary * 0.153;
       const sCorpTotal = sCorpPayrollTax + extraFees;
 
-      // Tax difference
       const taxSavings = solePropTax - sCorpTotal;
 
-      // Update DOM elements
+      // Update the results
       document.getElementById("solePropTax").textContent =
         "Sole Proprietorship Approx. SE Tax: $" + solePropTax.toFixed(2);
 
@@ -196,20 +419,18 @@
           "Estimated Annual Savings: $" + taxSavings.toFixed(2);
       } else if (taxSavings < 0) {
         document.getElementById("difference").textContent =
-          "No Savings. Your S Corp costs exceed potential benefit by $" + Math.abs(taxSavings).toFixed(2);
+          "No Savings. Costs exceed benefit by $" + Math.abs(taxSavings).toFixed(2);
       } else {
-        document.getElementById("difference").textContent =
-          "No difference in this scenario.";
+        document.getElementById("difference").textContent = "No difference in this scenario.";
       }
 
-      // Show the results section, if it's hidden
+      // Show the results container
       const resultsDiv = document.getElementById("results");
       resultsDiv.classList.remove("hidden");
 
-      // Optional: Scroll to results
+      // Scroll to results
       resultsDiv.scrollIntoView({ behavior: "smooth" });
     }
   </script>
 </body>
 </html>
-
