@@ -1,111 +1,215 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>S Corp Savings Calculator (Example)</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      max-width: 600px;
-    }
-    .calculator {
-      border: 1px solid #ccc;
-      padding: 20px;
-      border-radius: 5px;
-    }
-    .calculator label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    .calculator input {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 15px;
-    }
-    .results {
-      margin-top: 20px;
-      padding: 15px;
-      background: #f9f9f9;
-      border-radius: 5px;
-    }
-    .results p {
-      margin: 5px 0;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 1rem;
-    }
-  </style>
+  <title>Ultimate S Corp Calculator</title>
+  <!-- Link to your external CSS file -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Optional: Google Fonts (remove if you prefer your own fonts) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap">
+
+  <!-- Meta tags for responsiveness -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- (Optional) Basic SEO meta tags -->
+  <meta name="description" content="A beautiful S Corp Calculator to estimate potential tax savings." />
+  <meta name="keywords" content="S Corp, Calculator, Tax Savings, Business" />
+  <meta name="author" content="Your Name or Company" />
 </head>
 <body>
-  <h1>S Corp Savings Calculator</h1>
-  <div class="calculator">
-    <label for="netIncome">Estimated Annual Net Income (before salary)</label>
-    <input type="number" id="netIncome" placeholder="e.g. 100000" />
-
-    <label for="ownerSalary">Reasonable Owner Salary</label>
-    <input type="number" id="ownerSalary" placeholder="e.g. 60000" />
-
-    <label for="extraFees">Additional S Corp Costs (annual)</label>
-    <input type="number" id="extraFees" placeholder="e.g. 2000" />
-
-    <button onclick="calculate()">Calculate Savings</button>
-
-    <div id="results" class="results" style="display:none;">
-      <p id="solePropTax"></p>
-      <p id="sCorpTax"></p>
-      <p id="difference"></p>
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">S Corp Saver</a>
+      <ul class="nav-menu">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#calculator">Calculator</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
     </div>
-  </div>
+  </nav>
 
+  <!-- ========== HERO SECTION ========== -->
+  <section id="hero" class="hero">
+    <!-- Replace with your own image URL, or remove the image entirely if desired -->
+    <img
+      src="https://via.placeholder.com/1200x400/007bff/ffffff?text=Beautiful+S+Corp+Hero+Image"
+      alt="S Corp Hero"
+      class="hero-image"
+    />
+    <div class="hero-overlay">
+      <h1 class="hero-title">Maximize Your S Corp Savings</h1>
+      <p class="hero-subtitle">
+        Estimate how much you can save on taxes and plan for the future of your business.
+      </p>
+      <a href="#calculator" class="btn btn-hero">Start Calculating</a>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT SECTION ========== -->
+  <section id="about" class="about-section">
+    <div class="about-container">
+      <h2>About Our Calculator</h2>
+      <p>
+        Our S Corp Calculator is designed to provide a rough estimate of potential tax savings 
+        when operating your business as an S Corporation versus a Sole Proprietorship/LLC 
+        (disregarded entity). While every effort has been made to ensure accuracy, tax 
+        situations vary widely, and this tool should be considered a starting point for 
+        discussions with a qualified professional.
+      </p>
+      <p>
+        We continuously update our assumptions to reflect current tax rates and thresholds, 
+        but be aware that federal and state laws change frequently. Always consult with a 
+        CPA or tax advisor to interpret these results and customize them to your situation.
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== CALCULATOR SECTION ========== -->
+  <section id="calculator" class="calculator-section">
+    <div class="calculator-container">
+      <h2>S Corp Tax Savings Calculator</h2>
+      <p>Fill out the fields below to see potential tax savings.</p>
+
+      <form id="taxForm" class="calc-form">
+        <!-- Net Income -->
+        <div class="form-group">
+          <label for="netIncome">Estimated Annual Net Income (before salary)</label>
+          <input
+            type="number"
+            id="netIncome"
+            placeholder="e.g. 100000"
+            required
+          />
+        </div>
+
+        <!-- Owner Salary -->
+        <div class="form-group">
+          <label for="ownerSalary">Reasonable Owner Salary</label>
+          <input
+            type="number"
+            id="ownerSalary"
+            placeholder="e.g. 60000"
+            required
+          />
+        </div>
+
+        <!-- Extra Fees (S Corp) -->
+        <div class="form-group">
+          <label for="extraFees">Additional S Corp Costs (annual)</label>
+          <input
+            type="number"
+            id="extraFees"
+            placeholder="e.g. 2000"
+            required
+          />
+        </div>
+
+        <!-- Calculate Button -->
+        <button type="button" class="btn btn-calc" onclick="calculateTaxes()">Calculate Savings</button>
+      </form>
+
+      <!-- Results Output -->
+      <div id="results" class="results hidden">
+        <h3>Your Results</h3>
+        <p id="solePropTax"></p>
+        <p id="sCorpTax"></p>
+        <p id="difference"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== DISCLAIMER & CTA SECTION ========== -->
+  <section class="disclaimer-cta">
+    <div class="disclaimer-container">
+      <h3>Disclaimer</h3>
+      <p>
+        This tool is for illustrative purposes only and does not constitute legal 
+        or tax advice. Tax laws vary by state and individual circumstances. Always 
+        consult with a qualified tax professional or CPA to fully understand 
+        your specific situation.
+      </p>
+    </div>
+    <div class="cta-container" id="contact">
+      <h3>Ready to Go Further?</h3>
+      <p>
+        We specialize in helping businesses of all sizes optimize their tax 
+        strategies. Contact us today for a personalized consultation and 
+        secure your financial future.
+      </p>
+      <a href="mailto:someone@example.com" class="btn btn-contact">Contact Us</a>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <p>&copy; 2025 Your Company Name. All rights reserved.</p>
+  </footer>
+
+  <!-- ========== SCRIPTS ========== -->
   <script>
-    function calculate() {
-      // Grab user inputs
-      const netIncome = parseFloat(document.getElementById("netIncome").value) || 0;
-      const ownerSalary = parseFloat(document.getElementById("ownerSalary").value) || 0;
-      const extraFees = parseFloat(document.getElementById("extraFees").value) || 0;
+    // -------------------------------------------------
+    //   Calculation Logic
+    //   (Feel free to modify if you have different
+    //   assumptions or more complex calculations)
+    // -------------------------------------------------
+    function calculateTaxes() {
+      // Grab the form values
+      const netIncomeInput = document.getElementById("netIncome");
+      const ownerSalaryInput = document.getElementById("ownerSalary");
+      const extraFeesInput = document.getElementById("extraFees");
 
-      // 1) Sole Proprietor: Approx self-employment tax (15.3%)
-      // (No bracket complexity here, purely an illustration)
-      const solePropSelfEmpTax = netIncome * 0.153;
-      const solePropTotalTaxApprox = solePropSelfEmpTax; 
-      
-      // 2) S Corp approach
-      // Employer + Employee side (15.3%) on the salary portion
+      // Convert to numbers (or 0 if invalid)
+      const netIncome = parseFloat(netIncomeInput.value) || 0;
+      const ownerSalary = parseFloat(ownerSalaryInput.value) || 0;
+      const extraFees = parseFloat(extraFeesInput.value) || 0;
+
+      // Basic validation: if netIncome < ownerSalary, warn the user
+      if (ownerSalary > netIncome) {
+        alert("Owner salary cannot exceed net income in this example calculation.");
+        return;
+      }
+
+      // ~~~ Sole Prop Calculation ~~~
+      // Assume 15.3% self-employment tax for the entire net income (simplified).
+      const solePropTax = netIncome * 0.153;
+
+      // ~~~ S Corp Calculation ~~~
+      // 15.3% total payroll tax on W-2 wages (owner salary) plus additional fees
       const sCorpPayrollTax = ownerSalary * 0.153;
-      // Remainder as distributions (not subject to FICA), but still subject to income tax
-      // This example omits actual income tax bracket differences for simplicity.
+      const sCorpTotal = sCorpPayrollTax + extraFees;
 
-      // Additional costs for S Corp (estimated)
-      const sCorpAdditionalCosts = extraFees;
+      // Tax difference
+      const taxSavings = solePropTax - sCorpTotal;
 
-      // Summarize S Corp approach
-      const sCorpTotalTaxApprox = sCorpPayrollTax + sCorpAdditionalCosts;
+      // Update DOM elements
+      document.getElementById("solePropTax").textContent =
+        "Sole Proprietorship Approx. SE Tax: $" + solePropTax.toFixed(2);
 
-      // 3) Calculate difference
-      const totalTaxDifference = solePropTotalTaxApprox - sCorpTotalTaxApprox;
+      document.getElementById("sCorpTax").textContent =
+        "S Corp (Payroll Tax + Fees): $" + sCorpTotal.toFixed(2);
 
-      // Render results
-      document.getElementById("solePropTax").textContent = 
-        "Estimated Sole Prop (SE tax only): $" + solePropTotalTaxApprox.toFixed(2);
-      document.getElementById("sCorpTax").textContent = 
-        "Estimated S Corp (Payroll tax + fees): $" + sCorpTotalTaxApprox.toFixed(2);
-      
-      if(totalTaxDifference > 0) {
-        document.getElementById("difference").textContent = 
-          "Approx. Annual Savings: $" + totalTaxDifference.toFixed(2);
-      } else if (totalTaxDifference < 0) {
+      if (taxSavings > 0) {
         document.getElementById("difference").textContent =
-          "No savings. S Corp costs exceed potential benefit by $" + Math.abs(totalTaxDifference).toFixed(2);
+          "Estimated Annual Savings: $" + taxSavings.toFixed(2);
+      } else if (taxSavings < 0) {
+        document.getElementById("difference").textContent =
+          "No Savings. Your S Corp costs exceed potential benefit by $" + Math.abs(taxSavings).toFixed(2);
       } else {
         document.getElementById("difference").textContent =
           "No difference in this scenario.";
       }
-      
-      document.getElementById("results").style.display = "block";
+
+      // Show the results section, if it's hidden
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.classList.remove("hidden");
+
+      // Optional: Scroll to results
+      resultsDiv.scrollIntoView({ behavior: "smooth" });
     }
   </script>
 </body>
 </html>
+
