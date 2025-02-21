@@ -2,17 +2,18 @@
 <html lang="en">
 <head>
   <!-- 
-    =====================================================================================================
-    CPA ON FIRE - Entity Selection Calculator (3-Way: Sole Prop, Partnership, S Corp)
-    =====================================================================================================
-    Features:
-      - Self-employment tax for Sole Prop & Partnership
-      - Payroll tax for S Corp salary
-      - User-chosen personal tax rate (0-35%) on net income (Sole Prop/Partnership) or entire pass-through (S Corp)
-      - 3-bar chart to compare totals
+    =======================================================================================
+    CPA ON FIRE - Entity Selection Calculator (Sole Prop, Partnership, S Corp)
+    Enhanced with:
+      1) Additional Medicare Tax toggle
+      2) Tooltips / info icons
+      3) Reasonable Salary guidance
+      4) Annual update note
+      5) Print button
+    =======================================================================================
   -->
   <meta charset="UTF-8" />
-  <title>CPA On Fire - Entity Selection Calculator</title>
+  <title>CPA On Fire - Enhanced Entity Selection Calculator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Optional: Google Fonts -->
@@ -34,7 +35,7 @@
     html, body {
       width: 100%;
       height: 100%;
-      font-family: 'Open Sans', sans-serif;
+      font-family: 'Open+Sans', sans-serif;
       background-color: #fdfdfd;
       color: #333;
       line-height: 1.6;
@@ -45,10 +46,12 @@
     }
 
     :root {
-      --brand-orange: #E55328; /* "CPA On Fire" orange */
+      --brand-orange: #E55328; /* CPA On Fire Orange */
       --brand-white: #fff;
       --brand-bg: #fdfdfd;
       --max-width: 1200px;
+      --tooltip-bg: #333;
+      --tooltip-text: #fff;
     }
 
     .container {
@@ -116,6 +119,15 @@
       margin: 0 auto;
       margin-bottom: 1rem;
     }
+
+    /* "Updated" note near top or bottom as needed */
+    .last-updated {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #888;
+      margin-bottom: 1.5rem;
+    }
+
     .calc-step {
       margin-bottom: 2rem;
     }
@@ -172,9 +184,42 @@
       background-color: #c4431e;
     }
 
+    /* Info icon or tooltip styling */
+    .tooltip-icon {
+      display: inline-block;
+      background-color: #ccc;
+      color: #fff;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      text-align: center;
+      line-height: 18px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      margin-left: 6px;
+      position: relative;
+    }
+    /* Basic "title" approach with CSS only on hover */
+    .tooltip-icon:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      background-color: var(--tooltip-bg);
+      color: var(--tooltip-text);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      top: 120%;
+      left: -50%;
+      width: max-content;
+      max-width: 200px;
+      white-space: pre-wrap;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+
     /*********************************************************************************
       4) RESULTS SECTION
-        We'll show 3 columns: Sole Prop, Partnership, S Corp
+      We'll show 3 columns: Sole Prop, Partnership, S Corp
     *********************************************************************************/
     .results-section {
       margin-top: 3rem;
@@ -204,7 +249,7 @@
 
     .results-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr; /* 3 columns now */
+      grid-template-columns: 1fr 1fr 1fr; /* 3 columns for each entity type */
       gap: 1rem;
       margin-bottom: 2rem;
     }
@@ -245,6 +290,29 @@
     }
 
     /*********************************************************************************
+      Print/Share
+    *********************************************************************************/
+    .print-btn {
+      background-color: #666;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      text-decoration: none;
+      margin: 0 auto;
+      font-weight: 600;
+      display: inline-block;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .print-btn:hover {
+      background-color: #444;
+    }
+    .print-share-wrap {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    /*********************************************************************************
       5) INFO SECTION
     *********************************************************************************/
     .info-section {
@@ -269,6 +337,13 @@
       max-width: 800px;
       margin: 0 auto;
       line-height: 1.6;
+    }
+
+    /* "Reasonable salary" link styling (optional) */
+    .salary-link {
+      color: var(--brand-orange);
+      text-decoration: underline;
+      font-weight: 600;
     }
 
     /*********************************************************************************
@@ -320,18 +395,24 @@
       <div class="calc-header">
         <h1>Entity Selection Calculator</h1>
         <p>
-          Compare **three** common entity types: Sole Proprietorship, Partnership, 
-          and S Corporation. We'll apply self-employment or payroll taxes, 
-          plus a user-chosen personal tax rate, to show approximate total taxes.
+          Compare taxes for Sole Proprietorship, Partnership, and S Corporation, factoring in 
+          Self-Employment or Payroll taxes, plus your personal tax rate.  
         </p>
+        <!-- Annual update note -->
+        <div class="last-updated">Last updated for tax year 2025</div>
       </div>
 
       <!-- Step 1: Net Income -->
       <div class="calc-step">
-        <h2>1) Annual Net Business Income</h2>
+        <h2>
+          1) Annual Net Business Income
+          <span 
+            class="tooltip-icon"
+            data-tooltip="For S Corp, it's profit before your salary. For Sole Prop & Partnership, it's total earnings."
+          >?</span>
+        </h2>
         <p>
-          For S Corp, this is your profit before paying yourself a W-2 salary. 
-          For Sole Prop & Partnership, it's simply total earnings.
+          Enter or slide your net business profit. 
         </p>
         <div class="slider-group">
           <label class="slider-label" for="netIncomeRange">Net Income ($10k - $500k):</label>
@@ -348,11 +429,25 @@
         </div>
       </div>
 
-      <!-- Step 2: Owner Salary (for S Corp) -->
+      <!-- Step 2: Owner Salary (S Corp Only) -->
       <div class="calc-step">
-        <h2>2) Owner Salary (S Corp Only)</h2>
+        <h2>
+          2) Owner Salary (S Corp Only)
+          <span 
+            class="tooltip-icon"
+            data-tooltip="This is the W-2 wage you draw in an S Corp. The rest is distribution."
+          >?</span>
+        </h2>
         <p>
-          The portion considered W-2 wages. Sole Prop & Partnership do not use this field.
+          Determining a <em>reasonable salary</em> is key. 
+          <a 
+            href="https://www.irs.gov/businesses/small-businesses-self-employed/s-are-you-paying-your-self-a-reasonable-salary" 
+            target="_blank"
+            class="salary-link"
+          >
+            Learn more
+          </a>
+          about IRS guidelines.
         </p>
         <div class="slider-group">
           <label class="slider-label" for="ownerSalaryRange">Owner Salary ($20k - $200k):</label>
@@ -369,14 +464,20 @@
         </div>
       </div>
 
-      <!-- Step 3: Personal Tax Rate (0-35%) -->
+      <!-- Step 3: Personal Tax Rate -->
       <div class="calc-step">
-        <h2>3) Personal Tax Rate (0% - 35%)</h2>
+        <h2>
+          3) Personal Tax Rate (0% - 35%)
+          <span 
+            class="tooltip-icon"
+            data-tooltip="Estimate an overall effective rate for federal income tax on your pass-through or net earnings."
+          >?</span>
+        </h2>
         <p>
-          This applies to net income for Sole Prop & Partnership or to the entire pass-through for S Corp.
+          Choose an approximate personal tax rate for your scenario. 
         </p>
         <div class="form-group">
-          <label class="slider-label" for="personalTaxSelect">Select Your Effective Personal Rate:</label>
+          <label class="slider-label" for="personalTaxSelect">Effective Personal Rate:</label>
           <select id="personalTaxSelect">
             <option value="0">0%</option>
             <option value="0.05">5%</option>
@@ -390,47 +491,71 @@
         </div>
       </div>
 
+      <!-- Additional Medicare Tax Toggle for High Income -->
+      <div class="calc-step">
+        <h2>4) Additional Medicare Tax (0.9% for high earners)</h2>
+        <p>
+          If your income exceeds certain thresholds 
+          (<strong>\$200k</strong> if single, <strong>\$250k</strong> if married), 
+          you may owe an extra 0.9% on amounts above that threshold.
+        </p>
+        <label style="display:block; margin-bottom:0.5rem;">
+          <input type="checkbox" id="addlMedCheck" /> Enable Additional Medicare Tax
+        </label>
+        <label for="filingStatus">Filing Status:</label>
+        <select id="filingStatus" style="margin-top:0.5rem;">
+          <option value="single">Single (\$200k threshold)</option>
+          <option value="married">Married (\$250k threshold)</option>
+        </select>
+      </div>
+
       <!-- Calculate Button -->
       <div class="calc-btn-wrap">
         <button class="calc-btn" onclick="calculateAllEntities()">Calculate Taxes</button>
       </div>
 
-      <!-- RESULTS (3 Columns) -->
+      <!-- RESULTS SECTION -->
       <div class="results-section" id="resultsSection">
         <div class="results-header">
           <h2>Your Results</h2>
-          <p>Below are approximate total taxes for Sole Prop, Partnership, and S Corp.</p>
+          <p>Approximate total taxes for Sole Prop, Partnership, and S Corp (with or without Additional Medicare Tax).</p>
         </div>
 
         <div class="results-grid">
-          <!-- Sole Prop Card -->
+          <!-- Sole Prop -->
           <div class="results-card">
             <h3>Sole Prop</h3>
             <p class="results-line" id="sp-seTax"></p>
             <p class="results-line" id="sp-personalTax"></p>
+            <p class="results-line" id="sp-addlMedTax"></p>
             <p class="results-line results-bold" id="sp-total"></p>
           </div>
-
-          <!-- Partnership Card -->
+          <!-- Partnership -->
           <div class="results-card">
             <h3>Partnership</h3>
             <p class="results-line" id="pt-seTax"></p>
             <p class="results-line" id="pt-personalTax"></p>
+            <p class="results-line" id="pt-addlMedTax"></p>
             <p class="results-line results-bold" id="pt-total"></p>
           </div>
-
-          <!-- S Corp Card -->
+          <!-- S Corp -->
           <div class="results-card">
             <h3>S Corp</h3>
             <p class="results-line" id="sc-payrollTax"></p>
             <p class="results-line" id="sc-personalTax"></p>
+            <p class="results-line" id="sc-addlMedTax"></p>
             <p class="results-line results-bold" id="sc-total"></p>
           </div>
         </div>
 
-        <!-- Bar Chart -->
+        <!-- Chart Section -->
         <div class="chart-section">
           <canvas id="chartCanvas" width="600" height="300"></canvas>
+        </div>
+
+        <!-- Print/Share button -->
+        <div class="print-share-wrap">
+          <button class="print-btn" onclick="window.print()">Print/Save as PDF</button>
         </div>
       </div>
     </div>
@@ -444,18 +569,25 @@
       </div>
       <div class="info-content">
         <p>
+          This calculator uses simplified logic to illustrate the differences in
+          self-employment tax, payroll tax, Additional Medicare Tax, and personal taxes.
+          Real-world situations vary. 
+        </p>
+        <p>
           <strong>Sole Proprietorship & Partnership:</strong><br/>
-          - We apply official self-employment tax logic (92.35% factor, 12.4% SS up to wage base, 2.9% Medicare).<br/>
-          - We then apply your chosen personal rate to the entire net income.
+          - Official SE tax formula (92.35% factor, SS wage base).  
+          - Entire net income is subject to personal tax at your chosen rate.  
         </p>
         <p>
           <strong>S Corporation:</strong><br/>
-          - Only the salary portion is subject to payroll tax (SS + Medicare).<br/>
-          - The entire net income (including distribution) is subject to personal tax at the chosen rate.
+          - Only the W-2 salary portion is subject to payroll tax (SS + Medicare).  
+          - The entire net income is subject to personal tax.  
+          - Additional Medicare tax applies if income surpasses thresholds (if enabled).  
         </p>
         <p>
-          State taxes, multi-owner complexities, or specific deductions may alter real-world outcomes. 
-          This calculator is intended for broad illustration. Consult CPA On Fire for professional advice.
+          For multi-owner or multi-state complexities, or to account for specific deductions 
+          (like retirement contributions, health insurance, etc.), consult a qualified CPA. 
+          This tool is for broad illustration only.
         </p>
       </div>
     </div>
@@ -469,26 +601,55 @@
   <!-- JAVASCRIPT -->
   <script>
     /********************************************************************
-      1) CONSTANTS
+      1) CONSTANTS & ADDL MEDICARE THRESHOLDS
     ********************************************************************/
-    const SS_WAGE_BASE = 160200; // approximate wage base for SS
+    const SS_WAGE_BASE = 160200; // approximate for 2025
+    const ADDL_MED_SINGLE = 200000;
+    const ADDL_MED_MARRIED = 250000;
+    const ADDL_MED_RATE = 0.009;
 
-    // Self-Employment Tax (Sole Prop & Partnership):
-    function calcSelfEmpTax(income) {
+    function toCurrency(num) {
+      return '$' + num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    /********************************************************************
+      2) HELPER: SELF-EMPLOYMENT & PAYROLL TAX
+    ********************************************************************/
+    // Official SE tax approach (Sole Prop or Partnership)
+    function calcSelfEmpTax(income, addlMedEnabled, filingStatus) {
       // net earnings factor
       const netE = income * 0.9235;
+      // Social Security portion
       let ssTax = 0;
       if (netE <= SS_WAGE_BASE) {
-        ssTax = netE * 0.124; // 12.4%
+        ssTax = netE * 0.124;
       } else {
         ssTax = SS_WAGE_BASE * 0.124;
       }
-      const medTax = netE * 0.029; // 2.9%
-      return ssTax + medTax;
+      // Medicare portion (2.9%)
+      const medTax = netE * 0.029;
+
+      let total = ssTax + medTax;
+      let addlMed = 0;
+      // Additional Medicare?
+      if (addlMedEnabled) {
+        const threshold = (filingStatus === 'married') 
+          ? ADDL_MED_MARRIED 
+          : ADDL_MED_SINGLE;
+        if (netE > threshold) {
+          addlMed = (netE - threshold) * ADDL_MED_RATE;
+          if (addlMed < 0) addlMed = 0;
+          total += addlMed;
+        }
+      }
+      return { 
+        total, 
+        addlMed 
+      };
     }
 
-    // Payroll tax (S Corp salary):
-    function calcPayrollTax(salary) {
+    // Payroll Tax (S Corp salary)
+    function calcPayrollTax(salary, addlMedEnabled, filingStatus) {
       let ssTax = 0;
       if (salary <= SS_WAGE_BASE) {
         ssTax = salary * 0.124;
@@ -496,51 +657,103 @@
         ssTax = SS_WAGE_BASE * 0.124;
       }
       const medTax = salary * 0.029;
-      return ssTax + medTax;
-    }
+      let total = ssTax + medTax;
+      let addlMed = 0;
 
-    function toCurrency(num) {
-      return '$' + num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      if (addlMedEnabled) {
+        const threshold = (filingStatus === 'married') 
+          ? ADDL_MED_MARRIED 
+          : ADDL_MED_SINGLE;
+        if (salary > threshold) {
+          addlMed = (salary - threshold) * ADDL_MED_RATE;
+          if (addlMed < 0) addlMed = 0;
+          total += addlMed;
+        }
+      }
+
+      return { 
+        total, 
+        addlMed 
+      };
     }
 
     /********************************************************************
-      2) MAIN CALC
+      3) MAIN CALC
     ********************************************************************/
     function calculateAllEntities() {
       const netIncome = parseFloat(document.getElementById('netIncomeRange').value) || 0;
       const ownerSalary = parseFloat(document.getElementById('ownerSalaryRange').value) || 0;
       const personalTaxRate = parseFloat(document.getElementById('personalTaxSelect').value) || 0;
 
-      // If user sets S corp salary > net income:
+      // Additional Medicare toggle
+      const addlMedEnabled = document.getElementById('addlMedCheck').checked;
+      const filingStatus = document.getElementById('filingStatus').value || 'single';
+
+      // Validate S Corp: salary <= net income
       if (ownerSalary > netIncome) {
         alert("Owner salary cannot exceed net income for S Corp scenario.");
         return;
       }
 
-      // Sole Prop
-      const spSE = calcSelfEmpTax(netIncome);
+      /**********************
+       * Sole Prop
+      **********************/
+      const spSE = calcSelfEmpTax(netIncome, addlMedEnabled, filingStatus);
       const spPersonalTax = netIncome * personalTaxRate;
-      const spTotal = spSE + spPersonalTax;
-      document.getElementById('sp-seTax').textContent = "Self-Employment Tax: " + toCurrency(spSE);
-      document.getElementById('sp-personalTax').textContent = "Personal Tax: " + toCurrency(spPersonalTax);
-      document.getElementById('sp-total').textContent = "Total: " + toCurrency(spTotal);
+      const spTotal = spSE.total + spPersonalTax;
 
-      // Partnership (same logic for an active partner):
-      const ptSE = calcSelfEmpTax(netIncome);
+      document.getElementById('sp-seTax').textContent = 
+        "Self-Employment Tax: " + toCurrency(spSE.total - spSE.addlMed); 
+      if (spSE.addlMed > 0) {
+        document.getElementById('sp-addlMedTax').textContent = 
+          "Add'l Medicare Tax: " + toCurrency(spSE.addlMed);
+      } else {
+        document.getElementById('sp-addlMedTax').textContent = "";
+      }
+      document.getElementById('sp-personalTax').textContent = 
+        "Personal Tax: " + toCurrency(spPersonalTax);
+      document.getElementById('sp-total').textContent = 
+        "Total: " + toCurrency(spTotal);
+
+      /**********************
+       * Partnership
+      **********************/
+      const ptSE = calcSelfEmpTax(netIncome, addlMedEnabled, filingStatus);
       const ptPersonalTax = netIncome * personalTaxRate;
-      const ptTotal = ptSE + ptPersonalTax;
-      document.getElementById('pt-seTax').textContent = "Self-Employment Tax: " + toCurrency(ptSE);
-      document.getElementById('pt-personalTax').textContent = "Personal Tax: " + toCurrency(ptPersonalTax);
-      document.getElementById('pt-total').textContent = "Total: " + toCurrency(ptTotal);
+      const ptTotal = ptSE.total + ptPersonalTax;
 
-      // S Corp
-      // Salary -> payroll tax, entire net taxed at personal rate
-      const scPayrollTax = calcPayrollTax(ownerSalary);
+      document.getElementById('pt-seTax').textContent = 
+        "Self-Employment Tax: " + toCurrency(ptSE.total - ptSE.addlMed);
+      if (ptSE.addlMed > 0) {
+        document.getElementById('pt-addlMedTax').textContent = 
+          "Add'l Medicare Tax: " + toCurrency(ptSE.addlMed);
+      } else {
+        document.getElementById('pt-addlMedTax').textContent = "";
+      }
+      document.getElementById('pt-personalTax').textContent = 
+        "Personal Tax: " + toCurrency(ptPersonalTax);
+      document.getElementById('pt-total').textContent = 
+        "Total: " + toCurrency(ptTotal);
+
+      /**********************
+       * S Corp
+      **********************/
+      const scPayroll = calcPayrollTax(ownerSalary, addlMedEnabled, filingStatus);
       const scPersonalTax = netIncome * personalTaxRate;
-      const scTotal = scPayrollTax + scPersonalTax;
-      document.getElementById('sc-payrollTax').textContent = "Payroll Tax: " + toCurrency(scPayrollTax);
-      document.getElementById('sc-personalTax').textContent = "Personal Tax: " + toCurrency(scPersonalTax);
-      document.getElementById('sc-total').textContent = "Total: " + toCurrency(scTotal);
+      const scTotal = scPayroll.total + scPersonalTax;
+
+      document.getElementById('sc-payrollTax').textContent = 
+        "Payroll Tax: " + toCurrency(scPayroll.total - scPayroll.addlMed);
+      if (scPayroll.addlMed > 0) {
+        document.getElementById('sc-addlMedTax').textContent = 
+          "Add'l Medicare Tax: " + toCurrency(scPayroll.addlMed);
+      } else {
+        document.getElementById('sc-addlMedTax').textContent = "";
+      }
+      document.getElementById('sc-personalTax').textContent = 
+        "Personal Tax: " + toCurrency(scPersonalTax);
+      document.getElementById('sc-total').textContent = 
+        "Total: " + toCurrency(scTotal);
 
       // Show results
       const resultsSection = document.getElementById('resultsSection');
@@ -559,7 +772,7 @@
     }
 
     /********************************************************************
-      3) BAR CHART (3 BARS)
+      4) BAR CHART (3 BARS)
     ********************************************************************/
     let chartCtx = null;
     function drawBarChart(spVal, ptVal, scVal) {
@@ -573,7 +786,7 @@
       const h = canvas.height;
       ctx.clearRect(0, 0, w, h);
 
-      // maxVal
+      // max
       const maxVal = Math.max(spVal, ptVal, scVal) * 1.2;
       const bottom = h - 30;
       const barWidth = 60;
